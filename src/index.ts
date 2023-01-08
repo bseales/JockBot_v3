@@ -16,8 +16,8 @@ client.once(Events.ClientReady, c => {
 client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return
 
-	const thisclient = interaction.client as JockbotClient
-	const command = thisclient.commands.get(commandToClass(interaction.commandName))
+	const jockbotClient = interaction.client as JockbotClient
+	const command = jockbotClient.commands.get(commandToClass(interaction.commandName))
 
 	if (!command) {
 		await interaction.reply({ content: `No command matching ${interaction.commandName} was found.`, ephemeral: true })
