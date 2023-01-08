@@ -9,12 +9,6 @@ export default class Ping implements Command {
 		.setName(this.name)
 		.setDescription(this.description)
 
-	// constructor() {
-	// 	this.commandBuilder = new SlashCommandBuilder()
-	// 		.setName(this.getName())
-	// 		.setDescription(this.getDescription())
-	// }
-
 	public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		await interaction.reply(this.getResponse())
 	}
