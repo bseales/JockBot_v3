@@ -15,5 +15,5 @@ export type ApplicationCommandOption = {
 }
 
 export interface JockbotCommand {
-    callback(interaction: CommandInteraction): Promise<void>;
+    execute(interaction: CommandInteraction): Promise<void>;
 }

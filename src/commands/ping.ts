@@ -9,7 +9,7 @@ export default class Ping implements JockbotCommand {
 		.setName(this.name)
 		.setDescription(this.description)
 
-	public async callback(interaction: CommandInteraction): Promise<void> {
+	public async execute(interaction: CommandInteraction): Promise<void> {
 		await interaction.reply(this.getResponse())
 	}
 
