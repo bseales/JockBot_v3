@@ -1,6 +1,7 @@
 import { Events, GatewayIntentBits } from 'discord.js'
 import dotenv from 'dotenv'
 import JockbotClient from './JockbotClient'
+import { commandToClass } from './util'
 
 dotenv.config()
 
@@ -18,9 +19,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	// TODO: prolly won't work tbh
 	const thisclient = interaction.client as JockbotClient
 
-	console.log(thisclient.commands)
-
-	const command = thisclient.commands.get(interaction.commandName)
+	const command = thisclient.commands.get(commandToClass(interaction.commandName))
 
 	if (!command) {
 		await interaction.reply({ content: `No command matching ${interaction.commandName} was found.`, ephemeral: true })
