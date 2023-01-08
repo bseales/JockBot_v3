@@ -1,5 +1,7 @@
 import { Events, GatewayIntentBits } from 'discord.js'
 import dotenv from 'dotenv'
+import Ping from './commands/ping'
+import { JockbotCommand } from './interfaces/command'
 import JockbotClient from './JockbotClient'
 import { commandToClass } from './util'
 
@@ -16,9 +18,8 @@ client.once(Events.ClientReady, c => {
 client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return
 
-	// TODO: prolly won't work tbh
 	const thisclient = interaction.client as JockbotClient
-
+	console.log(thisclient)
 	const command = thisclient.commands.get(commandToClass(interaction.commandName))
 
 	if (!command) {
@@ -27,7 +28,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 
 	try {
-		await command.execute(interaction)
+		await command.callback(interaction)
 	} catch (error) {
 		console.error(error)
 		await interaction.reply({ content: 'There was an error while executing this command! Please let Iron Man know.', ephemeral: true })

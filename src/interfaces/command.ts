@@ -16,7 +16,7 @@ export type ApplicationCommandOption = {
     readonly options?: Array<ApplicationCommandOption>;
 }
 
-export interface Command {
+export interface JockbotCommand {
     // readonly name: string;
     // readonly description: string;
     // readonly options?: Array<ApplicationCommandOption>;
@@ -24,6 +24,6 @@ export interface Command {
     // //readonly permissions: PermissionsString = 'SEND_MESSAGES';
     // readonly usage: string;
     // readonly devOnly?: boolean;
-    readonly execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+    callback(interaction: ChatInputCommandInteraction): Promise<void>;
     readonly getCommandBuilder: () => SlashCommandBuilder;
 }

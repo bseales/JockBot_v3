@@ -1,15 +1,15 @@
 import { Client, ClientOptions, Collection } from 'discord.js'
 import fs from 'node:fs'
 import path from 'node:path'
-import { Command } from './interfaces/command'
+import { JockbotCommand } from './interfaces/command'
 
 export default class JockbotClient extends Client {
-	public commands: Collection<string, Command>
+	public commands: Collection<string, JockbotCommand>
 
 	constructor(options: ClientOptions) {
 		super(options)
 
-		this.commands = new Collection()
+		this.commands = new Collection<string, JockbotCommand>()
 		this.loadCommands()
 	}
 

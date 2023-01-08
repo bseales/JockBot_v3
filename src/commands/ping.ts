@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js'
-import { Command } from 'src/interfaces/command'
+import { JockbotCommand } from 'src/interfaces/command'
 
-export default class Ping implements Command {
+export default class Ping implements JockbotCommand {
 	public name = 'ping'
 	public description = 'Replies with Pong!'
 
@@ -9,7 +9,7 @@ export default class Ping implements Command {
 		.setName(this.name)
 		.setDescription(this.description)
 
-	public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+	public async callback(interaction: ChatInputCommandInteraction): Promise<void> {
 		await interaction.reply(this.getResponse())
 	}
 
