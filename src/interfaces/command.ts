@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js'
+import { CommandInteraction } from 'discord.js'
 
 export type ApplicationCommandOptionChoice = {
     readonly name: string;
@@ -15,5 +15,5 @@ export type ApplicationCommandOption = {
 }
 
 export interface JockbotCommand {
-    callback(interaction: ChatInputCommandInteraction): Promise<void>;
+    callback(interaction: CommandInteraction): Promise<void>;
 }
