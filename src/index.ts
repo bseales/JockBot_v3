@@ -17,6 +17,8 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return
 
 	const jockbotClient = interaction.client as JockbotClient
+	console.log(jockbotClient.commands)
+
 	const command = jockbotClient.commands.get(commandToClass(interaction.commandName))
 
 	if (!command) {

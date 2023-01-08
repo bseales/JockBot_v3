@@ -14,15 +14,22 @@ export default class JockbotClient extends Client {
 	}
 
 	private loadCommands(): void {
-		const commandsPath = path.join(__dirname, 'commands')
-		const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'))
+		const commandFolders = [
+			'',
+			'/nfl'
+		]
 
-		commandFiles.forEach((file) => {
-			const filePath: string = path.join(commandsPath, file)
-			
-			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const command = require(filePath)
-			this.commands.set(command.default.name, new command.default())
+		commandFolders.forEach((folder) => {
+			const commandsPath = path.join(__dirname, `commands${folder}`)
+			const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'))
+	
+			commandFiles.forEach((file) => {
+				const filePath: string = path.join(commandsPath, file)
+				
+				// eslint-disable-next-line @typescript-eslint/no-var-requires
+				const command = require(filePath)
+				this.commands.set(command.default.name, new command.default())
+			})
 		})
 	}
 }

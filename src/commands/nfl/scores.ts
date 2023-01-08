@@ -1,7 +1,7 @@
 import { CommandInteraction, EmbedField, EmbedBuilder } from 'discord.js'
 import { JockbotCommand } from 'src/interfaces/command'
 import axios from 'axios'
-import { NFLScoreboard } from '../interfaces/espn/nfl'
+import { NFLScoreboard } from '../../interfaces/espn/nfl'
 
 export default class NFLScores implements JockbotCommand {
 	public name = 'nfl-scores'
@@ -26,7 +26,6 @@ export default class NFLScores implements JockbotCommand {
 			let gameInfo = `${awayTeamName}: ${awayTeamScore}\n`
 			gameInfo += `${homeTeamName}: ${homeTeamScore}\n`
 			gameInfo += `[ESPN Gamecast](${espnGamecastLink})`
-
 			
 			embedFields.push({
 				name: `${game.shortName} | ${game.competitions[0].status.type.shortDetail}`,
@@ -51,6 +50,3 @@ export default class NFLScores implements JockbotCommand {
 		return json.data
 	}
 }
-
-
-
