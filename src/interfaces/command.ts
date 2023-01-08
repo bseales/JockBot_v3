@@ -1,5 +1,3 @@
-//import { PermissionsString } from "discord.js";
-
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 
 export type ApplicationCommandOptionChoice = {
@@ -17,13 +15,5 @@ export type ApplicationCommandOption = {
 }
 
 export interface JockbotCommand {
-    // readonly name: string;
-    // readonly description: string;
-    // readonly options?: Array<ApplicationCommandOption>;
-    // readonly default_permission?: boolean;
-    // //readonly permissions: PermissionsString = 'SEND_MESSAGES';
-    // readonly usage: string;
-    // readonly devOnly?: boolean;
     callback(interaction: ChatInputCommandInteraction): Promise<void>;
-    readonly getCommandBuilder: () => SlashCommandBuilder;
 }

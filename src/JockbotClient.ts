@@ -19,9 +19,10 @@ export default class JockbotClient extends Client {
 
 		commandFiles.forEach((file) => {
 			const filePath: string = path.join(commandsPath, file)
+			
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
 			const command = require(filePath)
-			this.commands.set(command.default.name, command.default)
+			this.commands.set(command.default.name, new command.default())
 		})
 	}
 }
