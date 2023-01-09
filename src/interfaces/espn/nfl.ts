@@ -1,15 +1,21 @@
 export interface Type {
-    id: string;
-    type: number;
-    name: string;
-    abbreviation: string;
+    id?: string;
+    text?: string;
+    abbreviation?: string;
+    name?: string;
+    state?: string;
+    completed?: boolean;
+    description?: string;
+    detail?: string;
+    shortDetail?: string;
 }
 
 export interface Season {
     year: number;
-    startDate: string;
-    endDate: string;
-    type: Type;
+    startDate?: string;
+    endDate?: string;
+    type: number; // used to be Type
+    slug?: string;
 }
 
 export interface Logo {
@@ -53,28 +59,8 @@ export interface League {
     calendar: Calendar[];
 }
 
-export interface Season2 {
-    type: number;
-    year: number;
-}
-
 export interface Week {
     number: number;
-}
-
-export interface Season3 {
-    year: number;
-    type: number;
-    slug: string;
-}
-
-export interface Week2 {
-    number: number;
-}
-
-export interface Type2 {
-    id: string;
-    abbreviation: string;
 }
 
 export interface Address {
@@ -84,22 +70,20 @@ export interface Address {
 
 export interface Venue {
     id: string;
-    fullName: string;
-    address: Address;
-    capacity: number;
-    indoor: boolean;
-}
-
-export interface Venue2 {
-    id: string;
+    fullName?: string;
+    address?: Address;
+    capacity?: number;
+    indoor?: boolean;
 }
 
 export interface Link {
-    rel: string[];
-    href: string;
-    text: string;
-    isExternal: boolean;
-    isPremium: boolean;
+    rel?: string[];
+    href?: string;
+    text?: string;
+    isExternal?: boolean;
+    isPremium?: boolean;
+    language?: string;
+    shortText?: string;
 }
 
 export interface Team {
@@ -113,7 +97,7 @@ export interface Team {
     color: string;
     alternateColor: string;
     isActive: boolean;
-    venue: Venue2;
+    venue: Venue;
     links: Link[];
     logo: string;
 }
@@ -129,17 +113,8 @@ export interface Record {
     summary: string;
 }
 
-export interface Link2 {
-    rel: string[];
-    href: string;
-}
-
 export interface Position {
     abbreviation: string;
-}
-
-export interface Team2 {
-    id: string;
 }
 
 export interface Athlete {
@@ -147,23 +122,19 @@ export interface Athlete {
     fullName: string;
     displayName: string;
     shortName: string;
-    links: Link2[];
+    links: Link[];
     headshot: string;
     jersey: string;
     position: Position;
-    team: Team2;
+    team: Team;
     active: boolean;
-}
-
-export interface Team3 {
-    id: string;
 }
 
 export interface Leader2 {
     displayValue: string;
     value: number;
     athlete: Athlete;
-    team: Team3;
+    team: Team;
 }
 
 export interface Leader {
@@ -182,21 +153,11 @@ export interface Competitor {
     homeAway: string;
     team: Team;
     score: string;
-    linescores: Linescore[];
-    statistics: any[];
-    records: Record[];
-    leaders: Leader[];
+    linescores?: Linescore[];
+    statistics?: any[];
+    records?: Record[];
+    leaders?: Leader[];
     winner?: boolean;
-}
-
-export interface Type3 {
-    id: string;
-    text: string;
-    abbreviation: string;
-}
-
-export interface Team4 {
-    id: string;
 }
 
 export interface Probability {
@@ -224,35 +185,18 @@ export interface Drive {
     description: string;
     start: Start;
     timeElapsed: TimeElapsed;
-    end: End;
-    result: string;
-}
-
-export interface Team5 {
-    id: string;
+    end?: End;
+    result?: string;
 }
 
 export interface Start2 {
     yardLine: number;
-    team: Team5;
-}
-
-export interface Team6 {
-    id: string;
+    team: TeamIdOnly;
 }
 
 export interface End2 {
     yardLine: number;
-    team: Team6;
-}
-
-export interface Link3 {
-    rel: string[];
-    href: string;
-}
-
-export interface Team7 {
-    id: string;
+    team: TeamIdOnly;
 }
 
 export interface AthletesInvolved {
@@ -260,19 +204,23 @@ export interface AthletesInvolved {
     fullName: string;
     displayName: string;
     shortName: string;
-    links: Link3[];
+    links: Link[];
     headshot: string;
     jersey: string;
     position: string;
-    team: Team7;
+    team: TeamIdOnly;
+}
+
+export interface TeamIdOnly {
+    id: string
 }
 
 export interface LastPlay {
     id: string;
-    type: Type3;
+    type: Type;
     text: string;
     scoreValue: number;
-    team: Team4;
+    team: TeamIdOnly;
     probability: Probability;
     drive: Drive;
     start: Start2;
@@ -293,24 +241,14 @@ export interface Situation {
     isRedZone: boolean;
     homeTimeouts: number;
     awayTimeouts: number;
-    possession: string;
-}
-
-export interface Type4 {
-    id: string;
-    name: string;
-    state: string;
-    completed: boolean;
-    description: string;
-    detail: string;
-    shortDetail: string;
+    possession?: string;
 }
 
 export interface Status {
     clock: number;
     displayClock: string;
     period: number;
-    type: Type4;
+    type: Type;
 }
 
 export interface Broadcast {
@@ -318,17 +256,8 @@ export interface Broadcast {
     names: string[];
 }
 
-export interface Link4 {
-    rel: string[];
-    href: string;
-}
-
 export interface Position2 {
     abbreviation: string;
-}
-
-export interface Team8 {
-    id: string;
 }
 
 export interface Athlete2 {
@@ -336,23 +265,19 @@ export interface Athlete2 {
     fullName: string;
     displayName: string;
     shortName: string;
-    links: Link4[];
+    links: Link[];
     headshot: string;
     jersey: string;
     position: Position2;
-    team: Team8;
+    team: Team;
     active: boolean;
-}
-
-export interface Team9 {
-    id: string;
 }
 
 export interface Leader4 {
     displayValue: string;
     value: number;
     athlete: Athlete2;
-    team: Team9;
+    team: Team;
 }
 
 export interface Leader3 {
@@ -371,11 +296,6 @@ export interface Format {
     regulation: Regulation;
 }
 
-export interface Type5 {
-    id: string;
-    shortName: string;
-}
-
 export interface Market {
     id: string;
     type: string;
@@ -386,21 +306,17 @@ export interface Media {
 }
 
 export interface GeoBroadcast {
-    type: Type5;
+    type: Type;
     market: Market;
     media: Media;
     lang: string;
     region: string;
 }
 
-export interface Link5 {
-    href: string;
-}
-
 export interface Ticket {
     summary: string;
     numberAvailable: number;
-    links: Link5[];
+    links: Link[];
 }
 
 export interface Provider {
@@ -416,47 +332,27 @@ export interface Odd {
 }
 
 export interface Competition {
-    id: string;
-    uid: string;
-    date: string;
-    attendance: number;
-    type: Type2;
-    timeValid: boolean;
-    neutralSite: boolean;
-    conferenceCompetition: boolean;
-    recent: boolean;
+    id?: string;
+    uid?: string;
+    date?: string;
+    attendance?: number;
+    type?: Type;
+    timeValid?: boolean;
+    neutralSite?: boolean;
+    conferenceCompetition?: boolean;
+    recent?: boolean;
     venue: Venue;
     competitors: Competitor[];
-    notes: any[];
+    notes?: any[];
     situation: Situation;
     status: Status;
-    broadcasts: Broadcast[];
-    leaders: Leader3[];
-    format: Format;
-    startDate: string;
-    geoBroadcasts: GeoBroadcast[];
-    tickets: Ticket[];
-    odds: Odd[];
-}
-
-export interface Link6 {
-    language: string;
-    rel: string[];
-    href: string;
-    text: string;
-    shortText: string;
-    isExternal: boolean;
-    isPremium: boolean;
-}
-
-export interface Link7 {
-    language: string;
-    rel: string[];
-    href: string;
-    text: string;
-    shortText: string;
-    isExternal: boolean;
-    isPremium: boolean;
+    broadcasts?: Broadcast[];
+    leaders?: Leader3[];
+    format?: Format;
+    startDate?: string;
+    geoBroadcasts?: GeoBroadcast[];
+    tickets?: Ticket[];
+    odds?: Odd[];
 }
 
 export interface Weather {
@@ -464,24 +360,7 @@ export interface Weather {
     temperature: number;
     highTemperature: number;
     conditionId: string;
-    link: Link7;
-}
-
-export interface Type6 {
-    id: string;
-    name: string;
-    state: string;
-    completed: boolean;
-    description: string;
-    detail: string;
-    shortDetail: string;
-}
-
-export interface Status2 {
-    clock: number;
-    displayClock: string;
-    period: number;
-    type: Type6;
+    link: Link;
 }
 
 export interface Event {
@@ -490,17 +369,17 @@ export interface Event {
     date: string;
     name: string;
     shortName: string;
-    season: Season3;
-    week: Week2;
+    season: Season;
+    week: Week;
     competitions: Competition[];
-    links: Link6[];
-    weather: Weather;
-    status: Status2;
+    links: Link[];
+    weather?: Weather;
+    status?: Status;
 }
 
 export interface NFLScoreboard {
-    leagues: League[];
-    season: Season2;
+    leagues?: League[];
+    season?: Season;
     week: Week;
     events: Event[];
 }
