@@ -3,3 +3,4 @@ node_modules
 .vscode/settings.json
 deploy-commands2.ts
 deploy-commands.ts
+coverage

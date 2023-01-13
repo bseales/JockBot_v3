@@ -100,6 +100,7 @@ export interface Team {
     venue: Venue;
     links: Link[];
     logo: string;
+    logos?: Logo[]
 }
 
 export interface Linescore {
