@@ -2,6 +2,7 @@ import { Events, GatewayIntentBits } from 'discord.js'
 import dotenv from 'dotenv'
 import JockbotClient from './JockbotClient'
 import { commandToClass } from './util'
+import { connectDatabase } from './database/connect'
 
 dotenv.config()
 
@@ -9,8 +10,9 @@ const client = new JockbotClient({
 	intents: [GatewayIntentBits.Guilds]
 })
 
-client.once(Events.ClientReady, c => {
+client.once(Events.ClientReady, async c => {
 	console.log(`Client ready, logged in as ${c.user.tag}`)
+	//await connectDatabase()
 })
 
 client.on(Events.InteractionCreate, async interaction => {
