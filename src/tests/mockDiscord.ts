@@ -47,7 +47,7 @@ export default class MockDiscord {
 		this.mockUser()
 		this.mockGuildMember()
 		this.mockMessage(options?.message?.content)
-		this.mockInteracion(options?.command)
+		this.mockInteraction(options?.command)
   
 		this.mockPrototypes()
   
@@ -349,7 +349,7 @@ export default class MockDiscord {
 		this.message.react = jest.fn()
 	}
   
-	private mockInteracion(command): void {
+	private mockInteraction(command): void {
 		if (!command) return
 		this.interaction = Reflect.construct(CommandInteraction, [
 			this.client,

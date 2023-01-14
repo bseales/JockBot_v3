@@ -1,7 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-
-import { CommandInteraction } from 'discord.js'
 import MockDiscord from './mockDiscord'
 
 export const defaultConfig = {
@@ -42,9 +40,16 @@ function castToType(value: string, typeId: number) {
 
 export function mockInteractionAndSpyReply(command) {
 	const discord = new MockDiscord({ command })
-	const interaction = discord.getInteraction() as CommandInteraction
+	const interaction = discord.getInteraction() as ChatInputCommandInteraction
 	const spy = jest.spyOn(interaction, 'reply') 
 	return { interaction, spy }
+}
+
+export function mockInteraction(command) {
+	const discord = new MockDiscord({ command })
+	const interaction = discord.getInteraction() as ChatInputCommandInteraction
+
+	return interaction
 }
 
 export async function executeCommandAndSpyReply(command, content, config = {}) {
@@ -98,6 +103,10 @@ export function embedContaining(content) {
 	return {
 		embeds: expect.arrayContaining([expect.objectContaining(content)])
 	}
+}
+
+export function ESPNTeamJson(): Team {
+	return {'id':'22','uid':'s:20~l:28~t:22','slug':'arizona-cardinals','location':'Arizona','name':'Cardinals','nickname':'Cardinals','abbreviation':'ARI','displayName':'Arizona Cardinals','shortDisplayName':'Cardinals','color':'A40227','alternateColor':'000000','isActive':true,'logos':[{'href':'https://a.espncdn.com/i/teamlogos/nfl/500/ari.png','width':500,'height':500,'alt':'','rel':['full','default'],'lastUpdated':'2018-06-05T12:11Z'},{'href':'https://a.espncdn.com/i/teamlogos/nfl/500-dark/ari.png','width':500,'height':500,'alt':'','rel':['full','dark'],'lastUpdated':'2018-06-05T12:11Z'},{'href':'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png','width':500,'height':500,'alt':'','rel':['full','scoreboard'],'lastUpdated':'2018-06-05T12:11Z'},{'href':'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/ari.png','width':500,'height':500,'alt':'','rel':['full','scoreboard','dark'],'lastUpdated':'2018-06-05T12:11Z'}],'record':{'items':[{'type':'total','summary':'4-13','stats':[{'name':'OTLosses','value':1.0},{'name':'OTWins','value':1.0},{'name':'avgPointsAgainst','value':26.411764},{'name':'avgPointsFor','value':20.0},{'name':'clincher','value':0.0},{'name':'differential','value':-109.0},{'name':'divisionWinPercent','value':0.16666667},{'name':'gamesBehind','value':0.0},{'name':'gamesPlayed','value':17.0},{'name':'leagueWinPercent','value':0.25},{'name':'losses','value':13.0},{'name':'playoffSeed','value':15.0},{'name':'points','value':-4.5},{'name':'pointsAgainst','value':449.0},{'name':'pointsFor','value':340.0},{'name':'streak','value':-7.0},{'name':'ties','value':0.0},{'name':'winPercent','value':0.23529412},{'name':'wins','value':4.0},{'name':'divisionLosses','value':5.0},{'name':'divisionRecord','value':0.0},{'name':'divisionTies','value':0.0},{'name':'divisionWins','value':1.0}]},{'description':'Home Record','type':'home','summary':'1-8','stats':[{'name':'wins','value':1.0},{'name':'losses','value':8.0},{'name':'ties','value':0.0},{'name':'winPercent','value':0.1111111119389534},{'name':'OTLosses','value':1.0}]},{'description':'Away Record','type':'road','summary':'3-5','stats':[{'name':'wins','value':3.0},{'name':'losses','value':5.0},{'name':'ties','value':0.0},{'name':'winPercent','value':0.375},{'name':'OTLosses','value':0.0}]}]},'groups':{'id':'3','parent':{'id':'7'},'isConference':false},'links':[{'language':'en-US','rel':['clubhouse','desktop','team'],'href':'https://www.espn.com/nfl/team/_/name/ari/arizona-cardinals','text':'Clubhouse','shortText':'Clubhouse','isExternal':false,'isPremium':false},{'language':'en-US','rel':['roster','desktop','team'],'href':'http://www.espn.com/nfl/team/roster/_/name/ari/arizona-cardinals','text':'Roster','shortText':'Roster','isExternal':false,'isPremium':false},{'language':'en-US','rel':['stats','desktop','team'],'href':'http://www.espn.com/nfl/team/stats/_/name/ari/arizona-cardinals','text':'Statistics','shortText':'Statistics','isExternal':false,'isPremium':false},{'language':'en-US','rel':['schedule','desktop','team'],'href':'https://www.espn.com/nfl/team/schedule/_/name/ari','text':'Schedule','shortText':'Schedule','isExternal':false,'isPremium':false},{'language':'en-US','rel':['photos','desktop','team'],'href':'https://www.espn.com/nfl/team/photos/_/name/ari','text':'photos','shortText':'photos','isExternal':false,'isPremium':false},{'language':'en-US','rel':['scores','sportscenter','app','team'],'href':'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28~t:22&section=scores','text':'Scores','shortText':'Scores','isExternal':false,'isPremium':false},{'language':'en-US','rel':['draftpicks','desktop','team'],'href':'http://www.espn.com/nfl/draft/teams/_/name/ari/arizona-cardinals','text':'Draft Picks','shortText':'Draft Picks','isExternal':false,'isPremium':true},{'language':'en-US','rel':['transactions','desktop','team'],'href':'https://www.espn.com/nfl/team/transactions/_/name/ari','text':'Transactions','shortText':'Transactions','isExternal':false,'isPremium':false},{'language':'en-US','rel':['injuries','desktop','team'],'href':'https://www.espn.com/nfl/team/injuries/_/name/ari','text':'Injuries','shortText':'Injuries','isExternal':false,'isPremium':false},{'language':'en-US','rel':['depthchart','desktop','team'],'href':'https://www.espn.com/nfl/team/depth/_/name/ari','text':'Depth Chart','shortText':'Depth Chart','isExternal':false,'isPremium':false}],'franchise':{'$ref':'http://sports.core.api.espn.pvt/v2/sports/football/leagues/nfl/franchises/22?lang=en&region=us','id':'22','uid':'s:20~l:28~f:22','slug':'arizona-cardinals','location':'Arizona','name':'Cardinals','nickname':'Cardinals','abbreviation':'ARI','displayName':'Arizona Cardinals','shortDisplayName':'Cardinals','color':'A40227','isActive':true,'venue':{'$ref':'http://sports.core.api.espn.pvt/v2/sports/football/leagues/nfl/venues/3970?lang=en&region=us','id':'3970','fullName':'State Farm Stadium','address':{'city':'Glendale','state':'AZ','zipCode':'85305'},'capacity':65000,'grass':true,'indoor':true,'images':[{'href':'https://a.espncdn.com/i/venues/nfl/day/3970.jpg','width':2000,'height':1125,'alt':'','rel':['full','day']},{'href':'https://a.espncdn.com/i/venues/nfl/day/interior/3970.jpg','width':2000,'height':1125,'alt':'','rel':['full','day','interior']}]},'team':{'$ref':'http://sports.core.api.espn.pvt/v2/sports/football/leagues/nfl/seasons/2022/teams/22?lang=en&region=us'}},'nextEvent':[],'standingSummary':'4th in NFC West'}
 }
 
 export function ESPNScoreboardJson(): NFLScoreboard {

@@ -1,7 +1,8 @@
-import { CommandInteraction, EmbedBuilder } from 'discord.js'
+import { APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js'
 import NFLScores from '../commands/nfl/scores'
+import NFLLogo from '../commands/nfl/logo'
 import axios from 'axios'
-import { ESPNScoreboardJson, getParsedCommand, mockInteractionAndSpyReply } from './util'
+import { ESPNScoreboardJson, ESPNTeamJson, getParsedCommand, mockInteraction, mockInteractionAndSpyReply } from './util'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -18,7 +19,7 @@ describe('NFL Commands', () => {
 			expect(mockedAxios.get).toHaveBeenCalledWith('http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard')
 		})
 
-		it('replies with the correct embed', async () => {
+		it('should reply with the correct embed', async () => {
 			const testSubject = new NFLScores()
 			const commandData = testSubject.commandBuilder
 			const command = getParsedCommand('/nfl-scores', commandData)
@@ -41,6 +42,58 @@ describe('NFL Commands', () => {
 
 			jest.spyOn(testSubject, 'getScoreboard').mockImplementation(() => {
 				return Promise.resolve(ESPNScoreboardJson())
+			})
+
+			await testSubject.execute(interaction)
+
+			expect(interactionReplySpy).toHaveBeenCalledWith({
+				embeds: [expectedEmbed]
+			})
+		})
+	})
+
+	describe('Logo', () => {
+		it('should ping the ESPN API', () => {
+			const testSubject = new NFLLogo()
+			const mockedEspnJson = ESPNTeamJson()
+			const ARIZONA_CARDINALS_ESPN_ID = 22
+
+			mockedAxios.get.mockResolvedValue({data: mockedEspnJson})
+			testSubject.getTeam(ARIZONA_CARDINALS_ESPN_ID)
+
+			expect(mockedAxios.get).toHaveBeenCalledWith(`http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${ARIZONA_CARDINALS_ESPN_ID}`)
+		})
+
+		// it('getTeamOption should return the team', () => {
+		// 	const testSubject = new NFLLogo()
+		// 	const commandData = testSubject.commandBuilder
+		// 	const command = getParsedCommand('/nfl-scores', commandData)
+		// 	const interaction = mockInteraction(command)
+
+		// 	testSubject.setInteraction(interaction)
+		// 	expect(testSubject.getTeamOption()).toBe('cardinals')
+		// })
+
+		it('should reply with the correct embed', async () => {
+			const testSubject = new NFLLogo()
+			const commandData = testSubject.commandBuilder
+			const command = getParsedCommand('/nfl-logo', commandData)
+			const { interaction, spy: interactionReplySpy } = mockInteractionAndSpyReply(command)
+
+			const teamImage: APIEmbedImage = {
+				url: 'https://a.espncdn.com/i/teamlogos/nfl/500/ari.png'
+			}
+			const expectedEmbed = new EmbedBuilder({
+				title: 'Arizona Cardinals',
+				image: teamImage
+			})
+
+			jest.spyOn(testSubject, 'getTeam').mockImplementation(() => {
+				return Promise.resolve(ESPNTeamJson())
+			})
+
+			jest.spyOn(testSubject, 'getTeamOption').mockImplementation(() => {
+				return 'cardinals'
 			})
 
 			await testSubject.execute(interaction)
