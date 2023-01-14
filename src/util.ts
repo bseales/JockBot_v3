@@ -4,6 +4,8 @@ export function commandToClass(command: string): string {
 		return 'Ping'  
 	case 'nfl-scores':
 		return 'NFLScores'
+	case 'nfl-logo':
+		return 'NFLLogo'
 	default:
 		return ''
 	}
