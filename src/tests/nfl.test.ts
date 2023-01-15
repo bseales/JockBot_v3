@@ -40,7 +40,7 @@ describe('NFL Commands', () => {
 				]
 			})
 
-			jest.spyOn(testSubject, 'getScoreboard').mockImplementation(() => {
+			jest.spyOn(testSubject, 'getScoreboard').mockImplementationOnce(() => {
 				return Promise.resolve(ESPNScoreboardJson())
 			})
 
@@ -106,11 +106,11 @@ describe('NFL Commands', () => {
 				image: teamImage
 			})
 
-			jest.spyOn(testSubject, 'getTeam').mockImplementation(() => {
+			jest.spyOn(testSubject, 'getTeam').mockImplementationOnce(() => {
 				return Promise.resolve(ESPNTeamJson())
 			})
 
-			jest.spyOn(testSubject, 'getTeamOption').mockImplementation(() => {
+			jest.spyOn(testSubject, 'getTeamOption').mockImplementationOnce(() => {
 				return 'cardinals'
 			})
 
