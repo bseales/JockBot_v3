@@ -32,7 +32,7 @@ export default class Claim implements JockbotCommand {
 
 	/**
 	 * Returns the Embed to be shown to the user.
-	 * @returns {EmbedBuilder}
+	 * @returns {Promise<EmbedBuilder>}
 	 */
 	public async buildEmbed(): Promise<EmbedBuilder> {
 		if (this.claimOnCooldown()) {

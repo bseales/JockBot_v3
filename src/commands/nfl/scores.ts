@@ -19,6 +19,10 @@ export default class NFLScores implements JockbotCommand {
 		.setName(this.name)
 		.setDescription(this.description)
 
+	/**
+	 * Returns the scoreboard JSON from the ESPN API.
+	 * @returns {Promise<NFLScoreboard>}
+	 */
 	public async getScoreboard(): Promise<NFLScoreboard> {
 		const json = await axios.get('http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard')
 		const scoreboard = json.data
@@ -30,6 +34,10 @@ export default class NFLScores implements JockbotCommand {
 		return scoreboard
 	}
 
+	/**
+	 * Returns the Embed to be shown to the user.
+	 * @returns {EmbedBuilder}
+	 */
 	public async buildEmbed(): Promise<EmbedBuilder> {
 		const scoreboard = await this.getScoreboard()
 		const { number: weekNumber } = scoreboard.week
@@ -41,6 +49,11 @@ export default class NFLScores implements JockbotCommand {
 		})
 	}
 
+	/**
+	 * Returns an array of fields containing scores and info for each game.
+	 * @param scoreboard JSON from ESPN
+	 * @returns {EmbedField[]}
+	 */
 	public getEmbedFields(scoreboard: NFLScoreboard): EmbedField[] {
 		const embedFields: EmbedField[] = []
 
