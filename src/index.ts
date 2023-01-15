@@ -12,7 +12,7 @@ const client = new JockbotClient({
 
 client.once(Events.ClientReady, async c => {
 	console.log(`Client ready, logged in as ${c.user.tag}`)
-	//await connectDatabase()
+	await connectDatabase()
 })
 
 client.on(Events.InteractionCreate, async interaction => {

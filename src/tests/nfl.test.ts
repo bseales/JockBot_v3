@@ -64,15 +64,33 @@ describe('NFL Commands', () => {
 			expect(mockedAxios.get).toHaveBeenCalledWith(`http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${ARIZONA_CARDINALS_ESPN_ID}`)
 		})
 
-		// it('getTeamOption should return the team', () => {
-		// 	const testSubject = new NFLLogo()
-		// 	const commandData = testSubject.commandBuilder
-		// 	const command = getParsedCommand('/nfl-scores', commandData)
-		// 	const interaction = mockInteraction(command)
+		it('getTeamOption should return the team', () => {
+			const testSubject = new NFLLogo()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				options: {
+					getString: jest.fn().mockReturnValue('cardinals')
+				}
+			} as unknown) as ChatInputCommandInteraction
 
-		// 	testSubject.setInteraction(interaction)
-		// 	expect(testSubject.getTeamOption()).toBe('cardinals')
-		// })
+			testSubject.setInteraction(mockInteraction)
+			expect(testSubject.getTeamOption()).toBe('cardinals')
+		})
+
+		it('invalid team name should exit early', () => {
+			const testSubject = new NFLLogo()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				reply: jest.fn(),
+				options: {
+					getString: jest.fn().mockReturnValue('some invalid team name')
+				}
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.execute(mockInteraction)
+
+			expect(mockInteraction.reply).toHaveBeenCalledWith({
+				content: 'Invalid team name!',
+				ephemeral: true
+			})
+		})
 
 		it('should reply with the correct embed', async () => {
 			const testSubject = new NFLLogo()
