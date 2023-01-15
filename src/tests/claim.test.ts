@@ -122,7 +122,6 @@ describe('Claim Command', () => {
 		})
 
 		if (updatedRecord) {
-			console.log(updatedRecord)
 			expect(updatedRecord.balance).toBe(350)
 		} else {
 			fail('Could not find updated record in database.')

@@ -16,13 +16,9 @@ export const connectDatabase = async () => {
 
 export const connectDatabaseTesting = async () => {
 	mongoose.set('strictQuery', false)
-
-	console.log('connecting to MongoDB (TEST)...')
 	testMongo = await MongoMemoryServer.create()
 	await mongoose.connect(`${testMongo.getUri()}`, {
 		dbName: process.env.MONGODB_DB_TEST_NAME
-	}).then(() => {
-		console.log('MongoDB (TEST) connected!')
 	}).catch(err => console.log(err))
 }
 

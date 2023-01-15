@@ -2,7 +2,7 @@ import { APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder } from 'discor
 import NFLScores from '../commands/nfl/scores'
 import NFLLogo from '../commands/nfl/logo'
 import axios from 'axios'
-import { ESPNScoreboardJson, ESPNTeamJson, getParsedCommand, mockInteraction, mockInteractionAndSpyReply } from './util'
+import { ESPNScoreboardJson, ESPNTeamJson, ESPNTeamJsonNoLogos, getParsedCommand, mockInteraction, mockInteractionAndSpyReply } from './util'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -108,6 +108,35 @@ describe('NFL Commands', () => {
 
 			jest.spyOn(testSubject, 'getTeam').mockImplementationOnce(() => {
 				return Promise.resolve(ESPNTeamJson())
+			})
+
+			jest.spyOn(testSubject, 'getTeamOption').mockImplementationOnce(() => {
+				return 'cardinals'
+			})
+
+			await testSubject.execute(interaction)
+
+			expect(interactionReplySpy).toHaveBeenCalledWith({
+				embeds: [expectedEmbed]
+			})
+		})
+
+		it('should still reply if JSON has no logos', async () => {
+			const testSubject = new NFLLogo()
+			const commandData = testSubject.commandBuilder
+			const command = getParsedCommand('/nfl-logo', commandData)
+			const { interaction, spy: interactionReplySpy } = mockInteractionAndSpyReply(command)
+
+			const teamImage: APIEmbedImage = {
+				url: ''
+			}
+			const expectedEmbed = new EmbedBuilder({
+				title: 'Arizona Cardinals',
+				image: teamImage
+			})
+
+			jest.spyOn(testSubject, 'getTeam').mockImplementationOnce(() => {
+				return Promise.resolve(ESPNTeamJsonNoLogos())
 			})
 
 			jest.spyOn(testSubject, 'getTeamOption').mockImplementationOnce(() => {
