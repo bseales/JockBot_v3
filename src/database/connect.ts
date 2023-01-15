@@ -1,4 +1,7 @@
 import mongoose from 'mongoose'
+import { MongoMemoryServer } from 'mongodb-memory-server'
+
+let testMongo:MongoMemoryServer
 
 export const connectDatabase = async () => {
 	mongoose.set('strictQuery', false)
@@ -15,7 +18,8 @@ export const connectDatabaseTesting = async () => {
 	mongoose.set('strictQuery', false)
 
 	console.log('connecting to MongoDB (TEST)...')
-	await mongoose.connect(`${process.env.MONGODB_URI}`, {
+	testMongo = await MongoMemoryServer.create()
+	await mongoose.connect(`${testMongo.getUri()}`, {
 		dbName: process.env.MONGODB_DB_TEST_NAME
 	}).then(() => {
 		console.log('MongoDB (TEST) connected!')
@@ -25,6 +29,10 @@ export const connectDatabaseTesting = async () => {
 export async function disconnectDBForTesting() {
 	try {
 		await mongoose.connection.close()
+
+		if (testMongo) {
+			testMongo.stop()
+		}
 	} catch (error) {
 		console.log('DB disconnect error')
 	}

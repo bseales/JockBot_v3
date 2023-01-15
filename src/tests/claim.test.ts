@@ -3,10 +3,19 @@ import Claim from '../commands/claim'
 import UserModel, { UserDocument } from '../database/models/user'
 import dotenv from 'dotenv'
 import { User, ChatInputCommandInteraction } from 'discord.js'
+import { connectDatabaseTesting, disconnectDBForTesting } from '../database/connect'
+import mongoose from 'mongoose'
 
 dotenv.config()
 
 describe('Claim Command', () => {
+	beforeAll(async () => {
+		await connectDatabaseTesting()
+	})
+
+	afterAll(async () => {
+		await disconnectDBForTesting()
+	})
 	it('Should get a random amount of bux between 1-20 for each claim', () => {
 		const testSubject = new Claim()
 
@@ -28,25 +37,28 @@ describe('Claim Command', () => {
 	it('Should update user record with the claimAmount', async () => {
 		const testSubject = new Claim()
 		const mockInteraction: ChatInputCommandInteraction = ({
-			options: {
-				getString: jest.fn().mockReturnValue('cardinals')
-			}
+			guildId: '987',
+			inGuild: jest.fn(() => true),
+			reply: jest.fn()
 		} as unknown) as ChatInputCommandInteraction
 
 		testSubject.setInteraction(mockInteraction)
 		const mockDiscordUser: User = ({
-			id: '1234',
+			id: '1',
 			username: 'Mango',
 			displayAvatarURL: jest.fn()
 		} as unknown) as User
-		const userRecord = {
-			guildId: '1234',
-			userId: '4321',
+		const lastClaimedDate = new Date()
+		lastClaimedDate.setDate(lastClaimedDate.getDate() - 2)
+	
+		await UserModel.create({
+			guildId: '987',
+			userId: '1',
 			userName: 'Mango',
 			balance: 350,
-			lastClaimedAt: Date.now(),
+			lastClaimedAt: lastClaimedDate,
 			bets: []
-		}
+		})
 
 		jest.spyOn(testSubject, 'getRandomClaimAmount').mockImplementationOnce(() => {
 			return 7
@@ -56,25 +68,102 @@ describe('Claim Command', () => {
 			return mockDiscordUser
 		})
 
-		await testSubject.processClaim()
+		await testSubject.execute(mockInteraction)
+		const updatedRecord = await UserModel.findOne({
+			guildId: '987',
+			userId: '1'
+		})
 
-		expect(testSubject.getUserRecord().balance).toBe(357)
+		if (updatedRecord) {
+			expect(updatedRecord.balance).toBe(357)
+		} else {
+			fail('Could not find updated record in database.')
+		}
 	})
 
-	// it('Should not allow a claim when the user is on cooldown', () => {
-	// 	expect(0).toBe(1)
-	// })
+	it('Should not allow a claim when the user is on cooldown', async () => {
+		const testSubject = new Claim()
+		const mockInteraction: ChatInputCommandInteraction = ({
+			guildId: '987',
+			inGuild: jest.fn(() => true),
+			reply: jest.fn()
+		} as unknown) as ChatInputCommandInteraction
 
-	// it('getNextClaimTime test', () => {
-	// 	const testSubject = new Claim()
+		testSubject.setInteraction(mockInteraction)
+		const mockDiscordUser: User = ({
+			id: '2',
+			username: 'SkyJudge',
+			displayAvatarURL: jest.fn()
+		} as unknown) as User
+		const lastClaimedDate = new Date()
+		lastClaimedDate.setHours(lastClaimedDate.getHours() - 1)
+	
+		await UserModel.create({
+			guildId: '987',
+			userId: '2',
+			userName: 'SkyJudge',
+			balance: 350,
+			lastClaimedAt: lastClaimedDate,
+			bets: []
+		})
+
+		jest.spyOn(testSubject, 'getRandomClaimAmount').mockImplementationOnce(() => {
+			return 7
+		})
+
+		jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+			return mockDiscordUser
+		})
+
+		await testSubject.execute(mockInteraction)
+		const updatedRecord = await UserModel.findOne({
+			guildId: '987',
+			userId: '2'
+		})
+
+		if (updatedRecord) {
+			console.log(updatedRecord)
+			expect(updatedRecord.balance).toBe(350)
+		} else {
+			fail('Could not find updated record in database.')
+		}
+	})
+
+	it('getNextClaimTime test', () => {
+		const testSubject = new Claim()
         
-	// 	jest.spyOn(testSubject, 'getHoursUntilClaim').mockImplementationOnce(() => {
-	// 		return 1
-	// 	})
-	// 	jest.spyOn(testSubject, 'getMinutesUntilClaim').mockImplementationOnce(() => {
-	// 		return 15
-	// 	})
+		jest.spyOn(testSubject, 'getHoursUntilClaim').mockImplementationOnce(() => {
+			return 1
+		})
+		jest.spyOn(testSubject, 'getMinutesUntilClaim').mockImplementationOnce(() => {
+			return 15
+		})
 
-	// 	expect(testSubject.getNextClaimTime()).toBe('1h 15m')
-	// })
+		expect(testSubject.getNextClaimTime()).toBe('1h 15m')
+	})
+
+	it('getDiscordUser test', () => {
+		const testSubject = new Claim()
+		const mockDiscordUser: User = ({
+			id: '2',
+			username: 'SkyJudge',
+			displayAvatarURL: jest.fn()
+		} as unknown) as User
+
+		testSubject.setDiscordUser(mockDiscordUser)
+
+		expect(testSubject.getDiscordUser()).toMatchObject(mockDiscordUser)
+	})
+
+	it('should return immediately if not in a guild', async () => {
+		const testSubject = new Claim()
+		const mockInteraction: ChatInputCommandInteraction = ({
+			inGuild: jest.fn(() => false),
+			reply: jest.fn()
+		} as unknown) as ChatInputCommandInteraction
+
+		await testSubject.execute(mockInteraction)
+
+		expect(mockInteraction.reply).not.toHaveBeenCalled()
+	})
 })

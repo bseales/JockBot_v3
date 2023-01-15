@@ -187,10 +187,6 @@ export default class Claim implements JockbotCommand {
 		return this.minutesUntilClaim
 	}
 
-	public getUserRecord(): UserDocument {
-		return this.userRecord
-	}
-
 	public setDiscordUser(user: User): void {
 		this.discordUser = user
 	}
