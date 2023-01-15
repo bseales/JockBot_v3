@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import Claim from '../commands/claim'
 import UserModel, { UserDocument } from '../database/models/user'
 import dotenv from 'dotenv'
+import { User, ChatInputCommandInteraction } from 'discord.js'
 
 dotenv.config()
 
@@ -23,24 +25,56 @@ describe('Claim Command', () => {
 		expect(amount4).toBeLessThanOrEqual(20)
 	})
 
-	it('Should update user record with the claimAmount', () => {
-		expect(0).toBe(1)
-	})
-
-	it('Should not allow a claim when the user is on cooldown', () => {
-		expect(0).toBe(1)
-	})
-
-	it('getNextClaimTime test', () => {
+	it('Should update user record with the claimAmount', async () => {
 		const testSubject = new Claim()
-        
-		jest.spyOn(testSubject, 'getHoursUntilClaim').mockImplementationOnce(() => {
-			return 1
-		})
-		jest.spyOn(testSubject, 'getMinutesUntilClaim').mockImplementationOnce(() => {
-			return 15
+		const mockInteraction: ChatInputCommandInteraction = ({
+			options: {
+				getString: jest.fn().mockReturnValue('cardinals')
+			}
+		} as unknown) as ChatInputCommandInteraction
+
+		testSubject.setInteraction(mockInteraction)
+		const mockDiscordUser: User = ({
+			id: '1234',
+			username: 'Mango',
+			displayAvatarURL: jest.fn()
+		} as unknown) as User
+		const userRecord = {
+			guildId: '1234',
+			userId: '4321',
+			userName: 'Mango',
+			balance: 350,
+			lastClaimedAt: Date.now(),
+			bets: []
+		}
+
+		jest.spyOn(testSubject, 'getRandomClaimAmount').mockImplementationOnce(() => {
+			return 7
 		})
 
-		expect(testSubject.getNextClaimTime()).toBe('1h 15m')
+		jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+			return mockDiscordUser
+		})
+
+		await testSubject.processClaim()
+
+		expect(testSubject.getUserRecord().balance).toBe(357)
 	})
+
+	// it('Should not allow a claim when the user is on cooldown', () => {
+	// 	expect(0).toBe(1)
+	// })
+
+	// it('getNextClaimTime test', () => {
+	// 	const testSubject = new Claim()
+        
+	// 	jest.spyOn(testSubject, 'getHoursUntilClaim').mockImplementationOnce(() => {
+	// 		return 1
+	// 	})
+	// 	jest.spyOn(testSubject, 'getMinutesUntilClaim').mockImplementationOnce(() => {
+	// 		return 15
+	// 	})
+
+	// 	expect(testSubject.getNextClaimTime()).toBe('1h 15m')
+	// })
 })

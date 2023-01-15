@@ -18,10 +18,10 @@ export default class Claim implements JockbotCommand {
 		if(!interaction.inGuild()) return
 
 		const { user: discordUser } = interaction
-		this.discordUser = discordUser
+		this.setDiscordUser(discordUser)
 		this.interaction = interaction
 
-		this.userRecord = await getOrCreateUserRecord(this.discordUser, interaction.guildId)
+		this.userRecord = await getOrCreateUserRecord(this.getDiscordUser(), interaction.guildId)
 
 		const embed = await this.buildEmbed()
         
@@ -52,13 +52,13 @@ export default class Claim implements JockbotCommand {
 		this.setMinutesUntilClaim(0)
 
 		const updatedRecord = await UserModel.findOneAndUpdate({
-			userId: this.discordUser.id,
+			userId: this.getDiscordUser().id,
 			guildId: this.interaction.guildId
 		},
 		{ 
 			$set: {
 				lastClaimedAt: this.interaction.createdAt, 
-				userName: this.discordUser.username
+				userName: this.getDiscordUser().username
 			},
 			$inc : {
 				'balance' : this.claimAmount
@@ -70,7 +70,7 @@ export default class Claim implements JockbotCommand {
 
 		if (updatedRecord) {
 			this.userRecord = updatedRecord
-		}
+		} 
 	}
 
 	/**
@@ -120,11 +120,11 @@ export default class Claim implements JockbotCommand {
 		description += `Next Claim: **${this.getNextClaimTime()}**`
 
 		const thumbnail: APIEmbedImage = {
-			url: this.discordUser.displayAvatarURL()
+			url: this.getDiscordUser().displayAvatarURL()
 		}
 					
 		return new EmbedBuilder({
-			title: `⌛ Claim on Cooldown for ${this.discordUser.username}`,
+			title: `⌛ Claim on Cooldown for ${this.getDiscordUser().username}`,
 			thumbnail,
 			description,
 			
@@ -140,11 +140,11 @@ export default class Claim implements JockbotCommand {
 		description += `Current Balance: **${(this.userRecord.balance).toLocaleString()} bux**\n\n`
 		description += `Next Claim: **${this.getNextClaimTime()}**`
 		const thumbnail: APIEmbedImage = {
-			url: this.discordUser.displayAvatarURL()
+			url: this.getDiscordUser().displayAvatarURL()
 		}
 
 		return new EmbedBuilder({
-			title: `Claim Receipt for ${this.discordUser.username}`,
+			title: `Claim Receipt for ${this.getDiscordUser().username}`,
 			thumbnail,
 			description,
 			
@@ -185,5 +185,21 @@ export default class Claim implements JockbotCommand {
 	 */
 	public getMinutesUntilClaim(): number {
 		return this.minutesUntilClaim
+	}
+
+	public getUserRecord(): UserDocument {
+		return this.userRecord
+	}
+
+	public setDiscordUser(user: User): void {
+		this.discordUser = user
+	}
+
+	public getDiscordUser(): User {
+		return this.discordUser
+	}
+
+	public setInteraction(interaction: ChatInputCommandInteraction): void {
+		this.interaction = interaction
 	}
 }
