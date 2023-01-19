@@ -1,4 +1,4 @@
-import { APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js'
+import { APIEmbedImage, ChatInputCommandInteraction, CommandInteraction, EmbedBuilder } from 'discord.js'
 import NFLScores from '../commands/nfl/scores'
 import NFLLogo from '../commands/nfl/logo'
 import SetNFLOdds from '../commands/nfl/setOdds'
@@ -191,10 +191,6 @@ describe('NFL Commands', () => {
 				return Promise.resolve(ESPNScoreboardJson())
 			})
 
-			testSubject.scoreboard = ESPNScoreboardJson()
-			testSubject.eventWeek = ESPNScoreboardJson().week.number
-			testSubject.eventWeekType = ESPNScoreboardJson().season.type
-
 			expect(await testSubject.oddsAlreadySetThisWeek()).toBe(false)
 
 			await testSubject.setOdds()
@@ -231,9 +227,63 @@ describe('NFL Commands', () => {
 			expect(await testSubject.oddsAlreadySetThisWeek()).toBe(true)
 		})
 
-		// it('should send the correct embed', () => {
+		it('should send the correct response when setting odds', async () => {
+			const testSubject = new SetNFLOdds()
+			const mockInteraction: CommandInteraction = ({
+				reply: jest.fn(),
+				followUp: jest.fn()
+			} as unknown) as CommandInteraction
 
-		// })
+			jest.spyOn(testSubject, 'getGameInfo').mockImplementationOnce(() => {
+				return Promise.resolve(ESPNBuccsAtFalconsInfo())
+			}).mockImplementationOnce(() => {
+				return Promise.resolve(ESPNPatsAtBills())
+			})
+
+			jest.spyOn(testSubject, 'getScoreboard').mockImplementation(() => {
+				return Promise.resolve(ESPNScoreboardJson())
+			})
+
+			await testSubject.execute(mockInteraction)
+			expect(mockInteraction.reply).toHaveBeenCalledWith('Setting odds...')
+			expect(mockInteraction.followUp).toHaveBeenCalledWith('Odds set!')
+		})
+
+		it('should send the correct response when odds are already set', async () => {
+			const testSubject = new SetNFLOdds()
+			const mockInteraction: CommandInteraction = ({
+				reply: jest.fn(),
+				followUp: jest.fn()
+			} as unknown) as CommandInteraction
+
+			await OddsModel.create({
+				eventId: 'some event id',
+				awayName: 'away team name',
+				awayTeamId: '5',
+				awayTeamMultiplier: 1.2,
+				eventWeek: 18,
+				eventWeekType: 2,
+				gameTime: new Date(),
+				homeName: 'home team name',
+				homeTeamId: '7', 
+				homeTeamMultiplier: 4.5,
+			})
+
+			jest.spyOn(testSubject, 'getGameInfo').mockImplementationOnce(() => {
+				return Promise.resolve(ESPNBuccsAtFalconsInfo())
+			}).mockImplementationOnce(() => {
+				return Promise.resolve(ESPNPatsAtBills())
+			})
+
+			jest.spyOn(testSubject, 'getScoreboard').mockImplementation(() => {
+				return Promise.resolve(ESPNScoreboardJson())
+			})
+
+			await testSubject.execute(mockInteraction)
+			expect(mockInteraction.reply).not.toHaveBeenCalledWith('Setting odds...')
+			expect(mockInteraction.followUp).not.toHaveBeenCalled()
+			expect(mockInteraction.reply).toHaveBeenCalledWith('Odds already set this week.')
+		})
 	})
 })
 
