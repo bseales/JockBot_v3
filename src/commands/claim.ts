@@ -1,5 +1,5 @@
-import { APIEmbedImage, ChatInputCommandInteraction, Embed, EmbedBuilder, HexColorString, User } from 'discord.js'
-import { getOrCreateUserRecord, UserDocument } from '../database/models/user'
+import { APIEmbedFooter, APIEmbedImage, ChatInputCommandInteraction, Embed, EmbedBuilder, HexColorString, User } from 'discord.js'
+import { createUserRecord, getOrCreateUserRecord, getUserRecord, UserDocument } from '../database/models/user'
 import UserModel from '../database/models/user'
 import { JockbotCommand } from 'src/interfaces/command'
 
@@ -21,10 +21,17 @@ export default class Claim implements JockbotCommand {
 		this.setDiscordUser(discordUser)
 		this.interaction = interaction
 
-		this.userRecord = await getOrCreateUserRecord(this.getDiscordUser(), interaction.guildId)
+		const record = await getUserRecord(this.getDiscordUser(), interaction.guildId)
+		let embed
 
-		const embed = await this.buildEmbed()
-        
+		if (record) {
+			this.userRecord = record
+			embed = await this.buildExistingUserEmbed()
+		} else {
+			this.userRecord = await createUserRecord(this.getDiscordUser(), interaction.guildId)
+			embed = await this.buildNewUserEmbed()
+		}
+
 		await interaction.reply({
 			embeds: [embed]
 		})
@@ -34,7 +41,7 @@ export default class Claim implements JockbotCommand {
 	 * Returns the Embed to be shown to the user.
 	 * @returns {Promise<EmbedBuilder>}
 	 */
-	public async buildEmbed(): Promise<EmbedBuilder> {
+	public async buildExistingUserEmbed(): Promise<EmbedBuilder> {
 		if (this.claimOnCooldown()) {
 			return this.buildCooldownEmbed()
 		} else {
@@ -150,6 +157,32 @@ export default class Claim implements JockbotCommand {
 			
 		}).setColor(this.embedColor)
 	}
+
+	/**
+	 * Returns a claim receipt Embed.
+	 * @returns {EmbedBuilder}
+	 */
+	private buildNewUserEmbed(): EmbedBuilder {
+		this.setHoursUntilClaim(2)
+		this.setMinutesUntilClaim(0)
+
+		let description = `Claim Amount: **${this.userRecord.balance} bux**\n`
+		description += `Current Balance: **${(this.userRecord.balance).toLocaleString()} bux**\n\n`
+		description += `Next Claim: **${this.getNextClaimTime()}**`
+		const thumbnail: APIEmbedImage = {
+			url: this.getDiscordUser().displayAvatarURL()
+		}
+		const footer: APIEmbedFooter = {
+			text: 'You have been given a first-time bonus of 350 bux to get you started!'
+		}
+
+		return new EmbedBuilder({
+			title: `Claim Receipt for ${this.getDiscordUser().username}`,
+			thumbnail,
+			description,
+			footer
+		}).setColor(this.embedColor)
+	} 
 
 	/**
 	 * Sets the hours until the user can claim again

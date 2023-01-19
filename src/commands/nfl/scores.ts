@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedField, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
+import { CommandInteraction, EmbedField, EmbedBuilder, SlashCommandBuilder, APIEmbedImage } from 'discord.js'
 import { JockbotCommand } from 'src/interfaces/command'
 import axios from 'axios'
 import { NFLScoreboard, Event } from '../../interfaces/espn/nfl'
@@ -42,10 +42,14 @@ export default class NFLScores implements JockbotCommand {
 		const scoreboard = await this.getScoreboard()
 		const { number: weekNumber } = scoreboard.week
 		const embedFields = this.getEmbedFields(scoreboard)
+		const thumbnail: APIEmbedImage = {
+			url: 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png?w=100&h=100&transparent=true'
+		}
 
 		return new EmbedBuilder({
 			title: `Scores for NFL Week ${weekNumber}`,
-			fields: embedFields
+			fields: embedFields,
+			thumbnail
 		})
 	}
 

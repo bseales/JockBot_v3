@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import Claim from '../commands/claim'
-import UserModel, { UserDocument } from '../database/models/user'
+import UserModel from '../database/models/user'
 import dotenv from 'dotenv'
-import { User, ChatInputCommandInteraction } from 'discord.js'
-import { connectDatabaseTesting, disconnectDBForTesting } from '../database/connect'
-import mongoose from 'mongoose'
+import { User, ChatInputCommandInteraction, EmbedBuilder, APIEmbedImage, APIEmbedFooter, HexColorString } from 'discord.js'
+import { connectDatabaseTesting, disconnectDBForTesting, dropDB } from '../database/connect'
 
 dotenv.config()
 
@@ -16,6 +15,11 @@ describe('Claim Command', () => {
 	afterAll(async () => {
 		await disconnectDBForTesting()
 	})
+
+	afterEach(async () => {
+		await dropDB()
+	})
+	
 	it('Should get a random amount of bux between 1-20 for each claim', () => {
 		const testSubject = new Claim()
 
@@ -164,5 +168,62 @@ describe('Claim Command', () => {
 		await testSubject.execute(mockInteraction)
 
 		expect(mockInteraction.reply).not.toHaveBeenCalled()
+	})
+
+	it('Should handle a new user correctly', async () => {
+		const testSubject = new Claim()
+		const mockInteraction: ChatInputCommandInteraction = ({
+			guildId: '987',
+			inGuild: jest.fn(() => true),
+			reply: jest.fn()
+		} as unknown) as ChatInputCommandInteraction
+		const mockDiscordUser: User = ({
+			id: '2',
+			username: 'Milo',
+			displayAvatarURL: jest.fn()
+		} as unknown) as User
+		
+		let description = 'Claim Amount: **350 bux**\n'
+		description += 'Current Balance: **350 bux**\n\n'
+		description += 'Next Claim: **2h 0m**'
+		const thumbnail: APIEmbedImage = {
+			url: mockDiscordUser.displayAvatarURL()
+		}
+		const footer: APIEmbedFooter = {
+			text: 'You have been given a first-time bonus of 350 bux to get you started!'
+		}
+		const embedColor: HexColorString = '#0099ff'
+		const expectedEmbed = new EmbedBuilder({
+			title: `Claim Receipt for ${mockDiscordUser.username}`,
+			thumbnail,
+			description,
+			footer
+		}).setColor(embedColor)
+		const interactionSpy = jest.spyOn(mockInteraction, 'reply')
+
+		testSubject.setInteraction(mockInteraction)
+
+		jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+			return mockDiscordUser
+		})
+
+		await testSubject.execute(mockInteraction)
+		const newUserRecord = await UserModel.findOne({
+			guildId: '987',
+			userId: '2'
+		})
+
+		if (newUserRecord) {
+			expect(newUserRecord.balance).toBe(350)
+			expect(newUserRecord.guildId).toBe('987')
+			expect(newUserRecord.userName).toBe('Milo')
+			expect(newUserRecord.userId).toBe('2')
+			
+			expect(interactionSpy).toHaveBeenCalledWith({
+				embeds: [expectedEmbed]
+			})
+		} else {
+			fail('Could not find updated record in database.')
+		}
 	})
 })
