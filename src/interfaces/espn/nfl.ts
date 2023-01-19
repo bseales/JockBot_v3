@@ -380,7 +380,7 @@ export interface Event {
 
 export interface NFLScoreboard {
     leagues?: League[];
-    season?: Season;
+    season: Season;
     week: Week;
     events: Event[];
 }

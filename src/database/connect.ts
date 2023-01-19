@@ -22,6 +22,10 @@ export const connectDatabaseTesting = async () => {
 	}).catch(err => console.log(err))
 }
 
+export const dropDB = async () => {
+	await mongoose.connection.db.dropDatabase()
+}
+
 export async function disconnectDBForTesting() {
 	try {
 		await mongoose.connection.close()

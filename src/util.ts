@@ -8,6 +8,8 @@ export function commandToClass(command: string): string {
 		return 'NFLLogo'
 	case 'claim': 
 		return 'Claim'
+	case 'set-nfl-odds':
+		return 'SetNFLOdds'
 	default:
 		return ''
 	}

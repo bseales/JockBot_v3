@@ -20,6 +20,11 @@ const JockbotCommands = [
 			option
 				.setName('team')
 				.setRequired(true)
-				.setDescription('The team whose logo you would like.')).toJSON()
+				.setDescription('The team whose logo you would like.')).toJSON(),
+
+	new SlashCommandBuilder()
+		.setName('set-nfl-odds')
+		.setDescription('Sets this week\'s NFL odds.')
+		.setDefaultMemberPermissions(0) // command disabled by default
 ]
 export default JockbotCommands

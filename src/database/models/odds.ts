@@ -5,12 +5,12 @@ export interface OddsInput {
     awayName: string,
     awayTeamId: number,
     awayTeamMultiplier: number,
-    eventWeek: string,
+    eventWeek: number,
+	eventWeekType: number,
     gameTime: Date,
     homeName: string,
     homeTeamId: number, 
     homeTeamMultiplier: number,
-    updatedAt: Date
 }
 
 export interface OddsDocument extends OddsInput, Document {
@@ -27,12 +27,12 @@ const OddsSchema = new mongoose.Schema<OddsDocument>(
 		awayName: String,
 		awayTeamId: Number,
 		awayTeamMultiplier: Number,
-		eventWeek: String,
+		eventWeek: Number,
+		eventWeekType: Number,
 		gameTime: Date,
 		homeName: String,
 		homeTeamId: Number, 
 		homeTeamMultiplier: Number,
-		updatedAt: Date
 	},
 	{
 		timestamps: true

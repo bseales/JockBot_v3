@@ -1359,7 +1359,1139 @@ export function ESPNScoreboardJson(): NFLScoreboard {
 			}
 		],
 		week: {
-			number: 1
+			number: 18
+		},
+		season: {
+			type: 2,
+			year: 2022
 		}
 	} 
+}
+
+export function ESPNBuccsAtFalconsInfo(): NFLEvent {
+	return {
+		'header': {
+			'id': '401437948',
+			'uid': 's:20~l:28~e:401437948',
+			'season': {
+				'year': 2022,
+				'type': 2
+			},
+			'timeValid': true,
+			'competitions': [
+				{
+					'id': '401437948',
+					'uid': 's:20~l:28~e:401437948~c:401437948',
+					'date': '2023-01-08T18:00Z',
+					'neutralSite': false,
+					'conferenceCompetition': false,
+					'boxscoreAvailable': true,
+					'commentaryAvailable': false,
+					'liveAvailable': false,
+					'onWatchESPN': false,
+					'recent': false,
+					'boxscoreSource': 'full',
+					'playByPlaySource': 'full',
+					'competitors': [
+						{
+							'id': '1',
+							'uid': 's:20~l:28~t:1',
+							'order': 0,
+							'homeAway': 'home',
+							'winner': true,
+							'team': {
+								'id': '1',
+								'uid': 's:20~l:28~t:1',
+								'location': 'Atlanta',
+								'name': 'Falcons',
+								'nickname': 'Falcons',
+								'abbreviation': 'ATL',
+								'displayName': 'Atlanta Falcons',
+								'color': '000000',
+								'alternateColor': '000000',
+								'logos': [
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/atl.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'default'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/atl.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'dark'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/atl.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/atl.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard',
+											'dark'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									}
+								],
+								'links': [
+									{
+										'rel': [
+											'clubhouse',
+											'desktop',
+											'team'
+										],
+										'href': 'https://www.espn.com/nfl/team/_/name/atl/atlanta-falcons',
+										'text': 'Clubhouse'
+									}
+								]
+							},
+							'score': '30',
+							'linescores': [
+								{
+									'displayValue': '10'
+								},
+								{
+									'displayValue': '0'
+								},
+								{
+									'displayValue': '10'
+								},
+								{
+									'displayValue': '10'
+								}
+							],
+							'record': [
+								{
+									'type': 'total',
+									'summary': '7-10',
+									'displayValue': '7-10'
+								},
+								{
+									'type': 'home',
+									'summary': '6-3',
+									'displayValue': '6-3'
+								}
+							],
+							'possession': false
+						},
+						{
+							'id': '27',
+							'uid': 's:20~l:28~t:27',
+							'order': 1,
+							'homeAway': 'away',
+							'winner': false,
+							'team': {
+								'id': '27',
+								'uid': 's:20~l:28~t:27',
+								'location': 'Tampa Bay',
+								'name': 'Buccaneers',
+								'nickname': 'Buccaneers',
+								'abbreviation': 'TB',
+								'displayName': 'Tampa Bay Buccaneers',
+								'color': 'A80D08',
+								'alternateColor': '34302b',
+								'logos': [
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/tb.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'default'
+										],
+										'lastUpdated': '2020-04-13T15:32Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/tb.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'dark'
+										],
+										'lastUpdated': '2020-04-13T15:35Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/tb.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/tb.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard',
+											'dark'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									}
+								],
+								'links': [
+									{
+										'rel': [
+											'clubhouse',
+											'desktop',
+											'team'
+										],
+										'href': 'https://www.espn.com/nfl/team/_/name/tb/tampa-bay-buccaneers',
+										'text': 'Clubhouse'
+									}
+								]
+							},
+							'score': '17',
+							'linescores': [
+								{
+									'displayValue': '7'
+								},
+								{
+									'displayValue': '10'
+								},
+								{
+									'displayValue': '0'
+								},
+								{
+									'displayValue': '0'
+								}
+							],
+							'record': [
+								{
+									'type': 'total',
+									'summary': '8-9',
+									'displayValue': '8-9'
+								},
+								{
+									'type': 'road',
+									'summary': '3-5',
+									'displayValue': '3-5'
+								}
+							],
+							'possession': false
+						}
+					],
+					'status': {
+						'type': {
+							'id': '3',
+							'name': 'STATUS_FINAL',
+							'state': 'post',
+							'completed': true,
+							'description': 'Final',
+							'detail': 'Final',
+							'shortDetail': 'Final'
+						}
+					},
+					'broadcasts': [
+						{
+							'type': {
+								'id': '1',
+								'shortName': 'TV'
+							},
+							'market': {
+								'id': '1',
+								'type': 'National'
+							},
+							'media': {
+								'shortName': 'FOX'
+							},
+							'lang': 'en',
+							'region': 'us'
+						}
+					]
+				}
+			],
+			'links': [
+				{
+					'rel': [
+						'summary',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/game/_/gameId/401437948',
+					'text': 'Gamecast',
+					'shortText': 'Summary',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'recap',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/recap?gameId=401437948',
+					'text': 'Recap',
+					'shortText': 'Recap',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'boxscore',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/boxscore/_/gameId/401437948',
+					'text': 'Box Score',
+					'shortText': 'Box Score',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'pbp',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/playbyplay/_/gameId/401437948',
+					'text': 'Play-by-Play',
+					'shortText': 'Play-by-Play',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'teamstats',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/matchup?gameId=401437948',
+					'text': 'Team Stats',
+					'shortText': 'Team Stats',
+					'isExternal': false,
+					'isPremium': false
+				}
+			],
+			'week': 18,
+			'league': {
+				'id': '28',
+				'uid': 's:20~l:28',
+				'name': 'National Football League',
+				'abbreviation': 'NFL',
+				'slug': 'nfl',
+				'isTournament': false,
+				'links': [
+					{
+						'rel': [
+							'index',
+							'desktop',
+							'league'
+						],
+						'href': 'https://www.espn.com/nfl/',
+						'text': 'Index'
+					},
+					{
+						'rel': [
+							'index',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28',
+						'text': 'Index'
+					},
+					{
+						'rel': [
+							'schedule',
+							'desktop',
+							'league'
+						],
+						'href': 'https://www.espn.com/nfl/schedule',
+						'text': 'Schedule'
+					},
+					{
+						'rel': [
+							'schedule',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28&section=scores',
+						'text': 'Schedule'
+					},
+					{
+						'rel': [
+							'standings',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/standings',
+						'text': 'Standings'
+					},
+					{
+						'rel': [
+							'standings',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28&section=standings',
+						'text': 'Standings'
+					},
+					{
+						'rel': [
+							'rankings',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/powerrankings',
+						'text': 'Power Rankings'
+					},
+					{
+						'rel': [
+							'scores',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/scoreboard',
+						'text': 'Scores'
+					},
+					{
+						'rel': [
+							'scores',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28&section=scores',
+						'text': 'Scores'
+					},
+					{
+						'rel': [
+							'stats',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/stats',
+						'text': 'Stats'
+					},
+					{
+						'rel': [
+							'teams',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/teams',
+						'text': 'Teams'
+					},
+					{
+						'rel': [
+							'athletes',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/players',
+						'text': 'Players'
+					},
+					{
+						'rel': [
+							'injuries',
+							'desktop',
+							'league'
+						],
+						'href': 'https://www.espn.com/nfl/injuries',
+						'text': 'Injuries'
+					},
+					{
+						'rel': [
+							'freeagency',
+							'desktop',
+							'league'
+						],
+						'href': 'http://insider.espn.com/nfl/freeagency/',
+						'text': 'Freeagency'
+					}
+				]
+			}
+		},
+		'pickcenter': [
+			{
+				'provider': {
+					'id': '45',
+					'name': 'Caesars Sportsbook (New Jersey)',
+					'priority': 1
+				},
+				'details': 'ATL -6.0',
+				'overUnder': 40,
+				'spread': -6,
+				'awayTeamOdds': {
+					'favorite': false,
+					'underdog': true,
+					'moneyLine': 196,
+					'spreadOdds': -110,
+					'teamId': '27'
+				},
+				'homeTeamOdds': {
+					'favorite': true,
+					'underdog': false,
+					'moneyLine': -240,
+					'spreadOdds': -110,
+					'teamId': '1'
+				},
+				'links': []
+			},
+			{
+				'provider': {
+					'id': '1004',
+					'name': 'consensus',
+					'priority': 0
+				},
+				'details': 'ATL -6.0',
+				'overUnder': 40.5,
+				'spread': -6,
+				'awayTeamOdds': {
+					'winPercentage': 66,
+					'favorite': false,
+					'underdog': true,
+					'moneyLine': 203,
+					'spreadOdds': -110,
+					'teamId': '27'
+				},
+				'homeTeamOdds': {
+					'winPercentage': 34,
+					'favorite': true,
+					'underdog': false,
+					'moneyLine': -247,
+					'spreadOdds': -110,
+					'teamId': '1'
+				},
+				'links': []
+			},
+			{
+				'provider': {
+					'id': '1002',
+					'name': 'teamrankings',
+					'priority': 0
+				},
+				'details': 'ATL -6.0',
+				'overUnder': 40.5,
+				'spread': -6,
+				'awayTeamOdds': {
+					'averageScore': 17.2,
+					'favorite': false,
+					'underdog': true,
+					'moneyLine': 205,
+					'spreadRecord': {
+						'wins': 4,
+						'losses': 12,
+						'pushes': 1,
+						'summary': '4-12-1'
+					},
+					'spreadOdds': -110,
+					'teamId': '27'
+				},
+				'homeTeamOdds': {
+					'averageScore': 23.3,
+					'favorite': true,
+					'underdog': false,
+					'moneyLine': -255,
+					'spreadRecord': {
+						'wins': 9,
+						'losses': 8,
+						'pushes': 0,
+						'summary': '9-8-0'
+					},
+					'spreadOdds': -110,
+					'teamId': '1'
+				},
+				'links': []
+			}
+		],
+	}
+}
+
+export function ESPNPatsAtBills(): NFLEvent {
+	return {
+		'header': {
+			'id': '401437949',
+			'uid': 's:20~l:28~e:401437949',
+			'season': {
+				'year': 2022,
+				'type': 2
+			},
+			'timeValid': true,
+			'competitions': [
+				{
+					'id': '401437949',
+					'uid': 's:20~l:28~e:401437949~c:401437949',
+					'date': '2023-01-08T18:00Z',
+					'neutralSite': false,
+					'conferenceCompetition': false,
+					'boxscoreAvailable': true,
+					'commentaryAvailable': false,
+					'liveAvailable': false,
+					'onWatchESPN': false,
+					'recent': false,
+					'boxscoreSource': 'full',
+					'playByPlaySource': 'full',
+					'competitors': [
+						{
+							'id': '2',
+							'uid': 's:20~l:28~t:2',
+							'order': 0,
+							'homeAway': 'home',
+							'winner': true,
+							'team': {
+								'id': '2',
+								'uid': 's:20~l:28~t:2',
+								'location': 'Buffalo',
+								'name': 'Bills',
+								'nickname': 'Bills',
+								'abbreviation': 'BUF',
+								'displayName': 'Buffalo Bills',
+								'color': '04407F',
+								'alternateColor': 'c60c30',
+								'logos': [
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'default'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/buf.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'dark'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/buf.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/buf.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard',
+											'dark'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									}
+								],
+								'links': [
+									{
+										'rel': [
+											'clubhouse',
+											'desktop',
+											'team'
+										],
+										'href': 'https://www.espn.com/nfl/team/_/name/buf/buffalo-bills',
+										'text': 'Clubhouse'
+									}
+								]
+							},
+							'score': '35',
+							'linescores': [
+								{
+									'displayValue': '7'
+								},
+								{
+									'displayValue': '7'
+								},
+								{
+									'displayValue': '14'
+								},
+								{
+									'displayValue': '7'
+								}
+							],
+							'record': [
+								{
+									'type': 'total',
+									'summary': '13-3',
+									'displayValue': '13-3'
+								},
+								{
+									'type': 'home',
+									'summary': '7-1',
+									'displayValue': '7-1'
+								}
+							],
+							'possession': false
+						},
+						{
+							'id': '17',
+							'uid': 's:20~l:28~t:17',
+							'order': 1,
+							'homeAway': 'away',
+							'winner': false,
+							'team': {
+								'id': '17',
+								'uid': 's:20~l:28~t:17',
+								'location': 'New England',
+								'name': 'Patriots',
+								'nickname': 'Patriots',
+								'abbreviation': 'NE',
+								'displayName': 'New England Patriots',
+								'color': '02244A',
+								'alternateColor': 'b0b7bc',
+								'logos': [
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/ne.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'default'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/ne.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'dark'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ne.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									},
+									{
+										'href': 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/ne.png',
+										'width': 500,
+										'height': 500,
+										'alt': '',
+										'rel': [
+											'full',
+											'scoreboard',
+											'dark'
+										],
+										'lastUpdated': '2018-06-05T12:11Z'
+									}
+								],
+								'links': [
+									{
+										'rel': [
+											'clubhouse',
+											'desktop',
+											'team'
+										],
+										'href': 'https://www.espn.com/nfl/team/_/name/ne/new-england-patriots',
+										'text': 'Clubhouse'
+									}
+								]
+							},
+							'score': '23',
+							'linescores': [
+								{
+									'displayValue': '7'
+								},
+								{
+									'displayValue': '7'
+								},
+								{
+									'displayValue': '3'
+								},
+								{
+									'displayValue': '6'
+								}
+							],
+							'record': [
+								{
+									'type': 'total',
+									'summary': '8-9',
+									'displayValue': '8-9'
+								},
+								{
+									'type': 'road',
+									'summary': '4-5',
+									'displayValue': '4-5'
+								}
+							],
+							'possession': false
+						}
+					],
+					'status': {
+						'type': {
+							'id': '3',
+							'name': 'STATUS_FINAL',
+							'state': 'post',
+							'completed': true,
+							'description': 'Final',
+							'detail': 'Final',
+							'shortDetail': 'Final'
+						}
+					},
+					'broadcasts': [
+						{
+							'type': {
+								'id': '1',
+								'shortName': 'TV'
+							},
+							'market': {
+								'id': '1',
+								'type': 'National'
+							},
+							'media': {
+								'shortName': 'CBS'
+							},
+							'lang': 'en',
+							'region': 'us'
+						}
+					]
+				}
+			],
+			'links': [
+				{
+					'rel': [
+						'summary',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/game/_/gameId/401437949',
+					'text': 'Gamecast',
+					'shortText': 'Summary',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'recap',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/recap?gameId=401437949',
+					'text': 'Recap',
+					'shortText': 'Recap',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'boxscore',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/boxscore/_/gameId/401437949',
+					'text': 'Box Score',
+					'shortText': 'Box Score',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'pbp',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/playbyplay/_/gameId/401437949',
+					'text': 'Play-by-Play',
+					'shortText': 'Play-by-Play',
+					'isExternal': false,
+					'isPremium': false
+				},
+				{
+					'rel': [
+						'teamstats',
+						'desktop',
+						'event'
+					],
+					'href': 'https://www.espn.com/nfl/matchup?gameId=401437949',
+					'text': 'Team Stats',
+					'shortText': 'Team Stats',
+					'isExternal': false,
+					'isPremium': false
+				}
+			],
+			'week': 18,
+			'league': {
+				'id': '28',
+				'uid': 's:20~l:28',
+				'name': 'National Football League',
+				'abbreviation': 'NFL',
+				'slug': 'nfl',
+				'isTournament': false,
+				'links': [
+					{
+						'rel': [
+							'index',
+							'desktop',
+							'league'
+						],
+						'href': 'https://www.espn.com/nfl/',
+						'text': 'Index'
+					},
+					{
+						'rel': [
+							'index',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28',
+						'text': 'Index'
+					},
+					{
+						'rel': [
+							'schedule',
+							'desktop',
+							'league'
+						],
+						'href': 'https://www.espn.com/nfl/schedule',
+						'text': 'Schedule'
+					},
+					{
+						'rel': [
+							'schedule',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28&section=scores',
+						'text': 'Schedule'
+					},
+					{
+						'rel': [
+							'standings',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/standings',
+						'text': 'Standings'
+					},
+					{
+						'rel': [
+							'standings',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28&section=standings',
+						'text': 'Standings'
+					},
+					{
+						'rel': [
+							'rankings',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/powerrankings',
+						'text': 'Power Rankings'
+					},
+					{
+						'rel': [
+							'scores',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/scoreboard',
+						'text': 'Scores'
+					},
+					{
+						'rel': [
+							'scores',
+							'sportscenter',
+							'app',
+							'league'
+						],
+						'href': 'sportscenter://x-callback-url/showClubhouse?uid=s:20~l:28&section=scores',
+						'text': 'Scores'
+					},
+					{
+						'rel': [
+							'stats',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/stats',
+						'text': 'Stats'
+					},
+					{
+						'rel': [
+							'teams',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/teams',
+						'text': 'Teams'
+					},
+					{
+						'rel': [
+							'athletes',
+							'desktop',
+							'league'
+						],
+						'href': 'http://www.espn.com/nfl/players',
+						'text': 'Players'
+					},
+					{
+						'rel': [
+							'injuries',
+							'desktop',
+							'league'
+						],
+						'href': 'https://www.espn.com/nfl/injuries',
+						'text': 'Injuries'
+					},
+					{
+						'rel': [
+							'freeagency',
+							'desktop',
+							'league'
+						],
+						'href': 'http://insider.espn.com/nfl/freeagency/',
+						'text': 'Freeagency'
+					}
+				]
+			}
+		},
+		'pickcenter': [
+			{
+				'provider': {
+					'id': '45',
+					'name': 'Caesars Sportsbook (New Jersey)',
+					'priority': 1
+				},
+				'details': 'BUF -8.0',
+				'overUnder': 44,
+				'spread': -8,
+				'awayTeamOdds': {
+					'favorite': false,
+					'underdog': true,
+					'moneyLine': 320,
+					'spreadOdds': -110,
+					'teamId': '17'
+				},
+				'homeTeamOdds': {
+					'favorite': true,
+					'underdog': false,
+					'moneyLine': -420,
+					'spreadOdds': -110,
+					'teamId': '2'
+				},
+				'links': []
+			},
+			{
+				'provider': {
+					'id': '1004',
+					'name': 'consensus',
+					'priority': 0
+				},
+				'details': 'BUF -8.0',
+				'overUnder': 44.5,
+				'spread': -8,
+				'awayTeamOdds': {
+					'winPercentage': 35,
+					'favorite': false,
+					'underdog': true,
+					'moneyLine': 306,
+					'spreadOdds': -110,
+					'teamId': '17'
+				},
+				'homeTeamOdds': {
+					'winPercentage': 65,
+					'favorite': true,
+					'underdog': false,
+					'moneyLine': -390,
+					'spreadOdds': -110,
+					'teamId': '2'
+				},
+				'links': []
+			},
+			{
+				'provider': {
+					'id': '1002',
+					'name': 'teamrankings',
+					'priority': 0
+				},
+				'details': 'BUF -8.0',
+				'overUnder': 44,
+				'spread': -8,
+				'awayTeamOdds': {
+					'averageScore': 18.9,
+					'favorite': false,
+					'underdog': true,
+					'moneyLine': 311,
+					'spreadRecord': {
+						'wins': 7,
+						'losses': 9,
+						'pushes': 1,
+						'summary': '7-9-1'
+					},
+					'spreadOdds': -110,
+					'teamId': '17'
+				},
+				'homeTeamOdds': {
+					'averageScore': 26.3,
+					'favorite': true,
+					'underdog': false,
+					'moneyLine': -369,
+					'spreadRecord': {
+						'wins': 8,
+						'losses': 8,
+						'pushes': 1,
+						'summary': '8-8-1'
+					},
+					'spreadOdds': -110,
+					'teamId': '2'
+				},
+				'links': []
+			}
+		],
+	}
 }
