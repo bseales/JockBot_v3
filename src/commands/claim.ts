@@ -21,11 +21,11 @@ export default class Claim implements JockbotCommand {
 		this.setDiscordUser(discordUser)
 		this.interaction = interaction
 
-		const record = await getUserRecord(this.getDiscordUser(), interaction.guildId)
+		const userRecord = await getUserRecord(this.getDiscordUser(), interaction.guildId)
 		let embed
 
-		if (record) {
-			this.userRecord = record
+		if (userRecord) {
+			this.userRecord = userRecord
 			embed = await this.buildExistingUserEmbed()
 		} else {
 			this.userRecord = await createUserRecord(this.getDiscordUser(), interaction.guildId)

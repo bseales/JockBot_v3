@@ -10,6 +10,8 @@ export function commandToClass(command: string): string {
 		return 'Claim'
 	case 'set-nfl-odds':
 		return 'SetNFLOdds'
+	case 'balance': 
+		return 'Balance'
 	default:
 		return ''
 	}

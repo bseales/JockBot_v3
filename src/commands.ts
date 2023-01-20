@@ -25,6 +25,10 @@ const JockbotCommands = [
 	new SlashCommandBuilder()
 		.setName('set-nfl-odds')
 		.setDescription('Sets this week\'s NFL odds.')
-		.setDefaultMemberPermissions(0) // command disabled by default
+		.setDefaultMemberPermissions(0), // command disabled by default
+
+	new SlashCommandBuilder()
+		.setName('balance')
+		.setDescription('Returns your current balance.').toJSON(),
 ]
 export default JockbotCommands
