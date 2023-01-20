@@ -30,5 +30,52 @@ const JockbotCommands = [
 	new SlashCommandBuilder()
 		.setName('balance')
 		.setDescription('Returns your current balance.').toJSON(),
+
+	new SlashCommandBuilder()
+		.setName('bet')
+		.setDescription('Bet on a game.')
+		.addSubcommand(subcommand => 
+			subcommand.setName('nfl')
+				.setDescription('Bet on an NFL game.')
+				.addStringOption(option =>
+					option
+						.setName('team')
+						.setRequired(true)
+						.setDescription('The team to bet on.')
+				)
+				.addNumberOption(amount =>
+					amount
+						.setName('amount')
+						.setRequired(true)
+						.setDescription('How much to bet.')
+				)
+		)
+		// .addSubcommand(subcommand => 
+		// 	subcommand.setName('xfl')
+		// 		.setDescription('Bet on an XFL game.')
+		// 		.addStringOption(option =>
+		// 			option
+		// 				.setName('team')
+		// 				.setRequired(true)
+		// 				.setDescription('The team to bet on.')
+		// 				.setChoices(
+		// 					{ name: 'Arlington Renegades', value: 'renegades'},
+		// 					{ name: 'DC Defenders', value: 'defenders' },
+		// 					{ name: 'Houston Roughnecks', value: 'roughnecks'},
+		// 					{ name: 'Orlando Guardians', value: 'guardians'},
+		// 					{ name: 'San Antonio Brahmas', value: 'brahmas'},
+		// 					{ name: 'Seattle Sea Dragons', value: 'dragons'},
+		// 					{ name: 'St. Louis BattleHawks', value: 'battlehawks'},
+		// 					{ name: 'Vegas Vipers', value: 'vipers'},
+		// 				)
+		// 		)
+		// 		.addNumberOption(amount =>
+		// 			amount
+		// 				.setName('amount')
+		// 				.setRequired(true)
+		// 				.setDescription('How much to bet.')
+		// 		)
+		// )
+		.toJSON(),
 ]
 export default JockbotCommands

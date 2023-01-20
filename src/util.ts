@@ -1,4 +1,9 @@
-export function commandToClass(command: string): string {
+import { ChatInputCommandInteraction } from 'discord.js'
+
+export function commandToClass(interaction: ChatInputCommandInteraction): string {
+	//interaction.options.getSubcommand()
+	const { commandName: command } = interaction
+
 	switch(command) {
 	case 'ping': 
 		return 'Ping'  
@@ -12,6 +17,13 @@ export function commandToClass(command: string): string {
 		return 'SetNFLOdds'
 	case 'balance': 
 		return 'Balance'
+	case 'bet': 
+		if(interaction.options.getSubcommand() == 'nfl') {
+			return 'NFLBet'
+		} else if (interaction.options.getSubcommand() == 'xfl') {
+			return 'XFLBet'
+		} 
+		return ''
 	default:
 		return ''
 	}
