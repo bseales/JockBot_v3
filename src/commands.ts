@@ -48,6 +48,7 @@ const JockbotCommands = [
 						.setName('amount')
 						.setRequired(true)
 						.setDescription('How much to bet.')
+						.setMinValue(1)
 				)
 		)
 		// .addSubcommand(subcommand => 

@@ -1,12 +1,13 @@
-import { APIEmbedImage, ChatInputCommandInteraction, CommandInteraction, EmbedBuilder } from 'discord.js'
+import { APIEmbedImage, ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, User } from 'discord.js'
 import NFLScores from '../commands/nfl/scores'
 import NFLLogo from '../commands/nfl/logo'
 import SetNFLOdds from '../commands/nfl/setOdds'
+import NFLBet from '../commands/nfl/bet'
 import axios from 'axios'
 import { ESPNBuccsAtFalconsInfo, ESPNPatsAtBills, ESPNScoreboardJson, ESPNTeamJson, ESPNTeamJsonNoLogos, getParsedCommand, mockInteractionAndSpyReply } from './util'
 import { connectDatabaseTesting, disconnectDBForTesting, dropDB } from '../database/connect'
 import OddsModel from '../database/models/odds'
-import { doesNotMatch } from 'assert'
+import UserModel from '../database/models/user'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -18,6 +19,10 @@ describe('NFL Commands', () => {
 
 	afterAll(async () => {
 		await disconnectDBForTesting()
+	})
+
+	beforeEach(async () => {
+		jest.resetAllMocks()
 	})
 
 	afterEach(async () => {
@@ -53,7 +58,10 @@ describe('NFL Commands', () => {
 						name: 'NE @ BUF | 1:54 - 2nd',
 						value: 'Patriots: 14\nBills: 14\n[ESPN Gamecast](https://www.espn.com/nfl/game?gameId=401437949)'
 					}
-				]
+				],
+				'thumbnail': {
+					'url': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png?w=100&h=100&transparent=true',
+				},
 			})
 
 			jest.spyOn(testSubject, 'getScoreboard').mockImplementationOnce(() => {
@@ -283,6 +291,255 @@ describe('NFL Commands', () => {
 			expect(mockInteraction.reply).not.toHaveBeenCalledWith('Setting odds...')
 			expect(mockInteraction.followUp).not.toHaveBeenCalled()
 			expect(mockInteraction.reply).toHaveBeenCalledWith('Odds already set this week.')
+		})
+	})
+
+	describe('Bet', () => {
+		it('should return immediately if not in a guild', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => false),
+				reply: jest.fn()
+			} as unknown) as ChatInputCommandInteraction
+	
+			await testSubject.execute(mockInteraction)
+	
+			expect(mockInteraction.reply).not.toHaveBeenCalled()
+		})
+
+		it('getTeamOption should return the team', () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => false),
+				options: {
+					getString: jest.fn().mockReturnValue('patriots')
+				}
+			} as unknown) as ChatInputCommandInteraction
+
+			testSubject.setInteraction(mockInteraction)
+			expect(testSubject.getTeamOption()).toBe('patriots')
+		})
+
+		it('invalid team name should exit early', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				options: {
+					getString: jest.fn().mockReturnValue('some invalid team name'),
+					getNumber: jest.fn()
+				}
+			} as unknown) as ChatInputCommandInteraction
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+			
+			await testSubject.execute(mockInteraction)
+
+			expect(mockInteraction.reply).toHaveBeenCalledWith({
+				content: 'Invalid team name!',
+				ephemeral: true
+			})
+		})
+
+		it('should not allow negative bets', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				options: {
+					getString: jest.fn().mockReturnValue('patriots'),
+					getNumber: jest.fn().mockReturnValue(-17)
+				}
+			} as unknown) as ChatInputCommandInteraction
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+			
+			await testSubject.execute(mockInteraction)
+
+			expect(mockInteraction.reply).toHaveBeenCalledWith({
+				content: 'Amount must be greater than zero!',
+				ephemeral: true
+			})
+		})
+
+		it('should not allow betting more than available balance', async () => {
+			const testSubject = new NFLBet()
+
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				options: {
+					getString: jest.fn().mockReturnValue('patriots'),
+					getNumber: jest.fn().mockReturnValue(400)
+				}
+			} as unknown) as ChatInputCommandInteraction
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+	
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+			
+			await testSubject.execute(mockInteraction)
+
+			expect(mockInteraction.reply).toHaveBeenCalledWith({
+				content: 'You can\'t bet more than your balance!',
+				ephemeral: true
+			})
+		})
+
+		it('verify null espnId', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn()
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+
+			expect(await testSubject.verifyInputs(9, null, null)).toBe(false)
+		})
+
+		it('verify negative betAmount', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn()
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+
+			expect(await testSubject.verifyInputs(-9, 2, null)).toBe(false)
+		})
+
+		it('verify null userRecord', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn()
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+
+			expect(await testSubject.verifyInputs(9, 2, null)).toBe(false)
+		})
+
+		it('verify betAmount > balance', async () => {
+			const testSubject = new NFLBet()
+
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+
+			const userDocument = await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+			
+			expect(await testSubject.verifyInputs(999, 2, userDocument)).toBe(false)
+		})
+
+		it('verify all valid inputs', async () => {
+			const testSubject = new NFLBet()
+
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+
+			const userDocument = await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+			
+			expect(await testSubject.verifyInputs(99, 2, userDocument)).toBe(true)
+		})
+
+		it('should notify the user and not allow bets if Odds not set for this week', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				options: {
+					getString: jest.fn().mockReturnValue('patriots'),
+					getNumber: jest.fn().mockReturnValue(17)
+				}
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+			await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+
+			const mockedEspnJson = ESPNScoreboardJson()
+			mockedAxios.get.mockResolvedValue({data: mockedEspnJson})
+			
+			await testSubject.execute(mockInteraction)
+
+			expect(mockInteraction.reply).toHaveBeenCalledWith({
+				content: 'NFL Odds haven\'t been set yet for this week. Please let Iron Man know!',
+				ephemeral: true
+			})
 		})
 	})
 })

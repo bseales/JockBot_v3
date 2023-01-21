@@ -5,6 +5,7 @@ import { Event, NFLScoreboard } from 'src/interfaces/espn/nfl'
 import { NFLEvent } from 'src/interfaces/espn/nflEvent'
 import { americanOddsToDecimal } from '../../oddsConverter'
 import OddsModel from '../../database/models/odds'
+import { getNflScoreboard, NflOddsAlreadySetThisWeek } from '../../util'
 
 export default class SetNFLOdds implements JockbotCommand {
 	public eventWeek!: number
@@ -28,10 +29,11 @@ export default class SetNFLOdds implements JockbotCommand {
 		this.eventWeekType = scoreboard.season.type
 		this.scoreboard = scoreboard
 
-		return await OddsModel.find({
-			eventWeek: scoreboard.week.number,
-			eventWeekType: scoreboard.season.type
-		}).count() > 0
+		return await NflOddsAlreadySetThisWeek(scoreboard)
+	}
+
+	public async getScoreboard(): Promise<NFLScoreboard> {
+		return getNflScoreboard()
 	}
 
 	public async setOdds(): Promise<void> {
@@ -55,16 +57,5 @@ export default class SetNFLOdds implements JockbotCommand {
 
 	public async getGameInfo(eventId: string): Promise<NFLEvent> {
 		return (await axios.get(`http://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=${eventId}`)).data
-	}
-
-	public async getScoreboard(): Promise<NFLScoreboard> {
-		const json = await axios.get('http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard')
-		const scoreboard = json.data
-
-		scoreboard.events.sort(function(a: Event, b: Event) {
-			return new Date(a.date).getTime() - new Date(b.date).getTime()
-		})
-
-		return scoreboard
 	}
 }

@@ -1,4 +1,7 @@
+import axios from 'axios'
 import { ChatInputCommandInteraction } from 'discord.js'
+import OddsModel from './database/models/odds'
+import { NFLScoreboard, Event } from './interfaces/espn/nfl'
 
 export function commandToClass(interaction: ChatInputCommandInteraction): string {
 	//interaction.options.getSubcommand()
@@ -27,6 +30,31 @@ export function commandToClass(interaction: ChatInputCommandInteraction): string
 	default:
 		return ''
 	}
+}
+
+/**
+ * Returns the scoreboard JSON from the ESPN API.
+ * @returns {Promise<NFLScoreboard>}
+ */
+export async function getNflScoreboard(): Promise<NFLScoreboard> {
+	const json = await axios.get('http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard')
+	const scoreboard = json.data
+
+	scoreboard.events.sort(function(a: Event, b: Event) {
+		return new Date(a.date).getTime() - new Date(b.date).getTime()
+	})
+
+	return scoreboard
+}
+
+export async function NflOddsAlreadySetThisWeek(scoreboard: NFLScoreboard): Promise<boolean> {
+	const { number: weekNumber } = scoreboard.week
+	const { type: weekType } = scoreboard.season
+
+	return await OddsModel.find({
+		eventWeek: weekNumber,
+		eventWeekType: weekType
+	}).count() > 0
 }
 
 export function getEspnIdByName(teamName: string): number | null {
