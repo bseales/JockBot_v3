@@ -1,4 +1,4 @@
-import { APIEmbedImage, ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, User } from 'discord.js'
+import { APIEmbedImage, ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, HexColorString, User } from 'discord.js'
 import NFLScores from '../commands/nfl/scores'
 import NFLLogo from '../commands/nfl/logo'
 import SetNFLOdds from '../commands/nfl/setOdds'
@@ -540,6 +540,313 @@ describe('NFL Commands', () => {
 				content: 'NFL Odds haven\'t been set yet for this week. Please let Iron Man know!',
 				ephemeral: true
 			})
+		})
+
+		it('should notify the user and not allow bets if no Odds for that team this week', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				options: {
+					getString: jest.fn().mockReturnValue('patriots'),
+					getNumber: jest.fn().mockReturnValue(17)
+				}
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+			await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+
+			// We have odds for a Falcons and Bills game, but not Patriots.
+			await OddsModel.create({
+				eventId: '654654',
+				awayName: '',
+				awayTeamId: 1,
+				awayTeamMultiplier: 1.2,
+				eventWeek: 18,
+				eventWeekType: 2,
+				gameTime: new Date(),
+				homeName: '',
+				homeTeamId: 2, 
+				homeTeamMultiplier: 3.2,
+			})
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+
+			const mockedEspnJson = ESPNScoreboardJson()
+			mockedAxios.get.mockResolvedValue({data: mockedEspnJson})
+			
+			await testSubject.execute(mockInteraction)
+
+			expect(mockInteraction.reply).toHaveBeenCalledWith({
+				content: 'I don\'t have any Odds for that team this week.',
+				ephemeral: true
+			})
+		})
+
+		it('should not allow betting on a game that has already started', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				options: {
+					getString: jest.fn().mockReturnValue('falcons'),
+					getNumber: jest.fn().mockReturnValue(17)
+				}
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+			await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+
+			await OddsModel.create({
+				eventId: '654654',
+				awayName: '',
+				awayTeamId: 1,
+				awayTeamMultiplier: 1.2,
+				eventWeek: 18,
+				eventWeekType: 2,
+				gameTime: new Date(Date.now() - 5000),
+				homeName: '',
+				homeTeamId: 2, 
+				homeTeamMultiplier: 3.2,
+			})
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+
+			const mockedEspnJson = ESPNScoreboardJson()
+			mockedAxios.get.mockResolvedValue({data: mockedEspnJson})
+			
+			await testSubject.execute(mockInteraction)
+
+			expect(mockInteraction.reply).toHaveBeenCalledWith({
+				content: 'That game\'s official start time has already passed.',
+				ephemeral: true
+			})
+		})
+
+		it('should work when betting on the home team', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				user: {
+					username: 'Mango'
+				},
+				options: {
+					getString: jest.fn().mockReturnValue('bills'),
+					getNumber: jest.fn().mockReturnValue(20)
+				}
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+			await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+
+			await OddsModel.create({
+				eventId: '654654',
+				awayName: 'Atlanta Falcons',
+				awayTeamId: 1,
+				awayTeamMultiplier: 1.2,
+				eventWeek: 18,
+				eventWeekType: 2,
+				gameTime: new Date(Date.now() + 50000),
+				homeName: 'Buffalo Bills',
+				homeTeamId: 2, 
+				homeTeamMultiplier: 3.2,
+			})
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			let description = 'Team: **Buffalo Bills**\n\n'
+			description += 'Wager: **20 bux**\n'
+			description += 'Multiplier: **3.2**\n'
+			description += 'Potential Return: **64 bux (+44)**\n\n'
+			description += 'Current Balance: **280 bux**'
+
+			const thumbnail: APIEmbedImage = {
+				url: mockDiscordUser.displayAvatarURL()
+			}
+			const embedColor: HexColorString = '#0099ff'
+			const expectedEmbed = new EmbedBuilder({
+				title: `Bet Receipt for ${mockDiscordUser.username}`,
+				thumbnail,
+				description
+			}).setColor(embedColor)
+
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+
+			const mockedEspnJson = ESPNScoreboardJson()
+			mockedAxios.get.mockResolvedValue({data: mockedEspnJson})
+			
+			await testSubject.execute(mockInteraction)
+
+			const userRecord = await UserModel.findOne({
+				guildId: '987',
+				userId: '1'
+			})
+	
+			if (userRecord) {
+				expect(userRecord.balance).toBe(280)
+				expect(userRecord.bets).toStrictEqual([
+					{
+						sport: 'NFL',
+						eventWeek: 18,
+						team: 'Buffalo Bills',
+						opponentTeam: 'Atlanta Falcons',
+						teamId: 2,
+						opponentTeamId: 1,
+						eventId: '654654',
+						amount: 20,
+						multiplier: 3.2,
+						isPaidOut: false,
+					}
+				])
+				
+				expect(mockInteraction.reply).toHaveBeenCalledWith({
+					embeds: [expectedEmbed]
+				})
+			} else {
+				fail('Could not find updated record in database.')
+			}
+		})
+
+		it('should work when betting on the away team', async () => {
+			const testSubject = new NFLBet()
+			const mockInteraction: ChatInputCommandInteraction = ({
+				inGuild: jest.fn(() => true),
+				guildId: '987',
+				reply: jest.fn(),
+				user: {
+					username: 'Mango'
+				},
+				options: {
+					getString: jest.fn().mockReturnValue('falcons'),
+					getNumber: jest.fn().mockReturnValue(20)
+				}
+			} as unknown) as ChatInputCommandInteraction
+			testSubject.setInteraction(mockInteraction)
+			await UserModel.create({
+				guildId: '987',
+				userId: '1',
+				userName: 'Mango',
+				balance: 300,
+				lastClaimedAt: new Date(),
+				bets: []
+			})
+
+			await OddsModel.create({
+				eventId: '654654',
+				awayName: 'Atlanta Falcons',
+				awayTeamId: 1,
+				awayTeamMultiplier: 1.2,
+				eventWeek: 18,
+				eventWeekType: 2,
+				gameTime: new Date(Date.now() + 50000),
+				homeName: 'Buffalo Bills',
+				homeTeamId: 2, 
+				homeTeamMultiplier: 3.2,
+			})
+
+			const mockDiscordUser: User = ({
+				id: '1',
+				username: 'Mango',
+				displayAvatarURL: jest.fn()
+			} as unknown) as User
+
+			let description = 'Team: **Atlanta Falcons**\n\n'
+			description += 'Wager: **20 bux**\n'
+			description += 'Multiplier: **1.2**\n'
+			description += 'Potential Return: **24 bux (+4)**\n\n'
+			description += 'Current Balance: **280 bux**'
+
+			const thumbnail: APIEmbedImage = {
+				url: mockDiscordUser.displayAvatarURL()
+			}
+			const embedColor: HexColorString = '#0099ff'
+			const expectedEmbed = new EmbedBuilder({
+				title: `Bet Receipt for ${mockDiscordUser.username}`,
+				thumbnail,
+				description
+			}).setColor(embedColor)
+
+			jest.spyOn(testSubject, 'getDiscordUser').mockImplementation(() => {
+				return mockDiscordUser
+			})
+
+			const mockedEspnJson = ESPNScoreboardJson()
+			mockedAxios.get.mockResolvedValue({data: mockedEspnJson})
+			
+			await testSubject.execute(mockInteraction)
+
+			const userRecord = await UserModel.findOne({
+				guildId: '987',
+				userId: '1'
+			})
+	
+			if (userRecord) {
+				expect(userRecord.balance).toBe(280)
+				expect(userRecord.bets).toStrictEqual([
+					{
+						sport: 'NFL',
+						eventWeek: 18,
+						team: 'Atlanta Falcons',
+						opponentTeam: 'Buffalo Bills',
+						teamId: 1,
+						opponentTeamId: 2,
+						eventId: '654654',
+						amount: 20,
+						multiplier: 1.2,
+						isPaidOut: false,
+					}
+				])
+				
+				expect(mockInteraction.reply).toHaveBeenCalledWith({
+					embeds: [expectedEmbed]
+				})
+			} else {
+				fail('Could not find updated record in database.')
+			}
 		})
 	})
 })

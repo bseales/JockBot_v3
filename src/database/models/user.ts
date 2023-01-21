@@ -1,6 +1,7 @@
 import { User } from 'discord.js'
 import mongoose, { Document } from 'mongoose'
-interface UserBet {
+export interface UserBet {
+	sport: string,
     eventWeek: number,
     team: string,
     opponentTeam: string,

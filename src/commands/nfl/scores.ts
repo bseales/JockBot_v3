@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedField, EmbedBuilder, SlashCommandBuilder, APIEmbedImage } from 'discord.js'
+import { ChatInputCommandInteraction, EmbedField, EmbedBuilder, SlashCommandBuilder, APIEmbedImage } from 'discord.js'
 import { JockbotCommand } from 'src/interfaces/command'
 import axios from 'axios'
 import { NFLScoreboard, Event } from '../../interfaces/espn/nfl'
@@ -7,7 +7,7 @@ export default class NFLScores implements JockbotCommand {
 	public name = 'nfl-scores'
 	public description = 'Returns live NFL scores.'
 
-	public async execute(interaction: CommandInteraction): Promise<void> {
+	public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const embed = await this.buildEmbed()
         
 		await interaction.reply({

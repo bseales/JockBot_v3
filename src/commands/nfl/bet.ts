@@ -1,30 +1,36 @@
-import { ChatInputCommandInteraction, User } from 'discord.js'
-import { getUserRecord, UserDocument } from '../../database/models/user'
+import { APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder, HexColorString, User } from 'discord.js'
+import { getUserRecord, UserBet, UserDocument } from '../../database/models/user'
 import { JockbotCommand } from 'src/interfaces/command'
 import { getEspnIdByName, getNflScoreboard, NflOddsAlreadySetThisWeek } from '../../util'
+import { getWeeklyTeamOdds } from '../../database/models/odds'
 
 export default class NFLBet implements JockbotCommand {
 	private interaction!: ChatInputCommandInteraction
 	private discordUser!: User
+	private embedColor: HexColorString = '#0099ff'
     
 	public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if(!interaction.inGuild()) return
         
 		this.setInteraction(interaction)
+		this.setDiscordUser(interaction.user)
 		const team = this.getTeamOption()
 		const betAmount = this.getBetAmountOption()
-		const espnId = getEspnIdByName(team)
+		const espnTeamId = getEspnIdByName(team)
 		const userRecord = await getUserRecord(this.getDiscordUser(), interaction.guildId)
 
-		if (await this.verifyInputs(betAmount, espnId, userRecord) == false) {
+		if (await this.verifyInputs(betAmount, espnTeamId, userRecord) == false) {
 			return
 		}
 
-		await this.handleBet()
+		// Because of verifyInputs above, userRecord and espnTeamId are guaranteed to be defined by now.
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		await this.handleBet(userRecord!, espnTeamId!, betAmount)
 	}
 
-	private async handleBet(): Promise<void> {
+	private async handleBet(userRecord: UserDocument, espnTeamId: number, betAmount: number): Promise<void> {
 		const scoreboard = await getNflScoreboard()
+		const { number: weekNumber } = scoreboard.week
         
 		if(await NflOddsAlreadySetThisWeek(scoreboard) == false) {
 			await this.interaction.reply({
@@ -35,11 +41,93 @@ export default class NFLBet implements JockbotCommand {
 			return
 		}
 
+		const gameOdds = await getWeeklyTeamOdds(weekNumber, espnTeamId)
+
+		if(!gameOdds) {
+			await this.interaction.reply({
+				ephemeral: true,
+				content: 'I don\'t have any Odds for that team this week.'
+			})
+
+			return
+		}
+
+		if (gameOdds.gameTime < new Date(Date.now())) {
+			await this.interaction.reply({
+				ephemeral: true,
+				content: 'That game\'s official start time has already passed.'
+			})
+			return
+		}
+
+		let opponentTeam
+		let opponentTeamId
+		let team
+		let teamId
+		let multiplier
+
+		if (gameOdds.homeTeamId === espnTeamId) {
+			opponentTeam = gameOdds.awayName
+			opponentTeamId = gameOdds.awayTeamId
+			multiplier = gameOdds.homeTeamMultiplier
+			team = gameOdds.homeName
+			teamId = gameOdds.homeTeamId
+		} else {
+			opponentTeam = gameOdds.homeName
+			opponentTeamId = gameOdds.homeTeamId
+			multiplier = gameOdds.awayTeamMultiplier
+			team = gameOdds.awayName
+			teamId = gameOdds.awayTeamId
+		}
+
+		const bet: UserBet = {
+			sport: 'NFL',
+			eventWeek: weekNumber,
+			team,
+			opponentTeam,
+			teamId,
+			opponentTeamId,
+			eventId: gameOdds.eventId,
+			amount: betAmount,
+			multiplier,
+			isPaidOut: false,
+		}
+
+		userRecord.bets.push(bet)
+		userRecord.balance -= betAmount
+		userRecord.userName = this.interaction.user.username
+
+		await userRecord.save()
+
+		const potentialReturn = Math.ceil(betAmount * multiplier)
+		const returnDifference = potentialReturn - betAmount
+
+		let description = `Team: **${team}**\n\n`
+		description += `Wager: **${betAmount.toLocaleString()} bux**\n`
+		description += `Multiplier: **${multiplier}**\n`
+		description += `Potential Return: **${potentialReturn} bux (+${returnDifference})**\n\n`
+		description += `Current Balance: **${userRecord.balance} bux**`
+
+		const thumbnail: APIEmbedImage = {
+			url: this.getDiscordUser().displayAvatarURL()
+		}
+
+		const embed = new EmbedBuilder({
+			title: `Bet Receipt for ${this.getDiscordUser().username}`,
+			thumbnail,
+			description
+		}).setColor(this.embedColor)
+
+		await this.interaction.reply({
+			embeds: [embed]
+		})
+
 		return 
 	}
 
-	public async verifyInputs(betAmount: number, espnId: number|null, userRecord: UserDocument|null): Promise<boolean> {
-		if (!espnId) {
+
+	public async verifyInputs(betAmount: number, espnTeamId: number|null, userRecord: UserDocument|null): Promise<boolean> {
+		if (!espnTeamId) {
 			await this.interaction.reply({
 				ephemeral: true,
 				content: 'Invalid team name!'

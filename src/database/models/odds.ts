@@ -39,5 +39,20 @@ const OddsSchema = new mongoose.Schema<OddsDocument>(
 	}
 )
 
+export async function getWeeklyTeamOdds(weekNumber: number, espnTeamId: number): Promise<OddsDocument|null> {
+	return OddsModel.findOne(
+		{  
+			$and: [
+				{ 
+					$or: [
+						{ homeTeamId: espnTeamId },
+						{ awayTeamId: espnTeamId }
+					]
+				},
+				{ eventWeek: weekNumber }
+			],
+		})
+}
+
 const OddsModel = mongoose.model('odds', OddsSchema)
 export default OddsModel

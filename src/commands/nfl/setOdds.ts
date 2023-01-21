@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { JockbotCommand } from 'src/interfaces/command'
-import { Event, NFLScoreboard } from 'src/interfaces/espn/nfl'
+import { NFLScoreboard } from 'src/interfaces/espn/nfl'
 import { NFLEvent } from 'src/interfaces/espn/nflEvent'
 import { americanOddsToDecimal } from '../../oddsConverter'
 import OddsModel from '../../database/models/odds'
@@ -12,7 +12,7 @@ export default class SetNFLOdds implements JockbotCommand {
 	public eventWeekType!: number 
 	public scoreboard!: NFLScoreboard
     
-	public async execute(interaction: CommandInteraction): Promise<void> {
+	public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (await this.oddsAlreadySetThisWeek()) {
 			await interaction.reply('Odds already set this week.')
 		} else {
