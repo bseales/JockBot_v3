@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, EmbedField, EmbedBuilder, SlashCommandBuil
 import { JockbotCommand } from 'src/interfaces/command'
 import axios from 'axios'
 import { NFLScoreboard, Event } from '../../interfaces/espn/nfl'
+import { NFLSeasonTypeToString } from '../../util'
 
 export default class NFLScores implements JockbotCommand {
 	public name = 'nfl-scores'
@@ -41,15 +42,16 @@ export default class NFLScores implements JockbotCommand {
 	public async buildEmbed(): Promise<EmbedBuilder> {
 		const scoreboard = await this.getScoreboard()
 		const { number: weekNumber } = scoreboard.week
+		const { type: seasonType } = scoreboard.season
 		const embedFields = this.getEmbedFields(scoreboard)
 		const thumbnail: APIEmbedImage = {
 			url: 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png?w=100&h=100&transparent=true'
 		}
 
 		return new EmbedBuilder({
-			title: `Scores for NFL Week ${weekNumber}`,
+			title: `Scores for NFL${NFLSeasonTypeToString(seasonType)} Week ${weekNumber}`,
 			fields: embedFields,
-			thumbnail
+			thumbnail: thumbnail
 		})
 	}
 
@@ -73,7 +75,7 @@ export default class NFLScores implements JockbotCommand {
 			gameInfo += `[ESPN Gamecast](${espnGamecastLink})`
 			
 			embedFields.push({
-				name: `${game.shortName} | ${game.competitions[0].status.type.shortDetail}`,
+				name: `${game.shortName}\n${game.competitions[0].status.type.shortDetail}`,
 				value: gameInfo,
 				inline: true
 			})

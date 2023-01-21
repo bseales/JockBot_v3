@@ -10,10 +10,13 @@ export function commandToClass(interaction: ChatInputCommandInteraction): string
 	switch(command) {
 	case 'ping': 
 		return 'Ping'  
-	case 'nfl-scores':
-		return 'NFLScores'
-	case 'nfl-logo':
-		return 'NFLLogo'
+	case 'nfl': 
+		if(interaction.options.getSubcommand() == 'scores') {
+			return 'NFLScores'
+		} else if (interaction.options.getSubcommand() == 'logo') {
+			return 'NFLLogo'
+		} 
+		return ''
 	case 'claim': 
 		return 'Claim'
 	case 'set-nfl-odds':
@@ -55,6 +58,15 @@ export async function NflOddsAlreadySetThisWeek(scoreboard: NFLScoreboard): Prom
 		eventWeek: weekNumber,
 		eventWeekType: weekType
 	}).count() > 0
+}
+
+export function NFLSeasonTypeToString(seasonType: number): string {
+	switch(seasonType) {
+	case 1: return ' Preseason'
+	case 3: return ' Postseason'
+	
+	default: return ''
+	}
 }
 
 export function getEspnIdByName(teamName: string): number | null {

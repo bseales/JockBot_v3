@@ -50,12 +50,12 @@ describe('NFL Commands', () => {
 				fields: [
 					{
 						inline: true,
-						name: 'TB @ ATL | 11:53 - 2nd',
+						name: 'TB @ ATL\n11:53 - 2nd',
 						value: 'Buccaneers: 17\nFalcons: 10\n[ESPN Gamecast](https://www.espn.com/nfl/game?gameId=401437948)'
 					},
 					{
 						inline: true,
-						name: 'NE @ BUF | 1:54 - 2nd',
+						name: 'NE @ BUF\n1:54 - 2nd',
 						value: 'Patriots: 14\nBills: 14\n[ESPN Gamecast](https://www.espn.com/nfl/game?gameId=401437949)'
 					}
 				],
