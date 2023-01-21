@@ -1,5 +1,5 @@
-import { APIEmbedFooter, APIEmbedImage, ChatInputCommandInteraction, Embed, EmbedBuilder, HexColorString, User } from 'discord.js'
-import { createUserRecord, getOrCreateUserRecord, getUserRecord, UserDocument } from '../database/models/user'
+import { APIEmbedFooter, APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder, HexColorString, User } from 'discord.js'
+import { createUserRecord, getUserRecord, UserDocument } from '../database/models/user'
 import UserModel from '../database/models/user'
 import { JockbotCommand } from 'src/interfaces/command'
 
