@@ -1,4 +1,4 @@
-import { APIEmbedImage, ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, HexColorString, User } from 'discord.js'
+import { APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder, HexColorString, User } from 'discord.js'
 import NFLScores from '../commands/nfl/scores'
 import NFLLogo from '../commands/nfl/logo'
 import SetNFLOdds from '../commands/nfl/setOdds'
@@ -237,10 +237,10 @@ describe('NFL Commands', () => {
 
 		it('should send the correct response when setting odds', async () => {
 			const testSubject = new SetNFLOdds()
-			const mockInteraction: CommandInteraction = ({
+			const mockInteraction: ChatInputCommandInteraction = ({
 				reply: jest.fn(),
 				followUp: jest.fn()
-			} as unknown) as CommandInteraction
+			} as unknown) as ChatInputCommandInteraction
 
 			jest.spyOn(testSubject, 'getGameInfo').mockImplementationOnce(() => {
 				return Promise.resolve(ESPNBuccsAtFalconsInfo())
@@ -259,10 +259,10 @@ describe('NFL Commands', () => {
 
 		it('should send the correct response when odds are already set', async () => {
 			const testSubject = new SetNFLOdds()
-			const mockInteraction: CommandInteraction = ({
+			const mockInteraction: ChatInputCommandInteraction = ({
 				reply: jest.fn(),
 				followUp: jest.fn()
-			} as unknown) as CommandInteraction
+			} as unknown) as ChatInputCommandInteraction
 
 			await OddsModel.create({
 				eventId: 'some event id',

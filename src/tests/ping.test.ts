@@ -1,10 +1,10 @@
 import Ping from '../commands/ping'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction } from 'discord.js'
 
 describe('Ping Command', () => {
-	const mockInteraction: CommandInteraction = ({
+	const mockInteraction: ChatInputCommandInteraction = ({
 		reply: jest.fn()
-	} as unknown) as CommandInteraction
+	} as unknown) as ChatInputCommandInteraction
 	
 	it('response should be Pong!', () => {
 		const testSubject = new Ping()
