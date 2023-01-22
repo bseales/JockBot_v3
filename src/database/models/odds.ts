@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose, { Document, Types } from 'mongoose'
 
 export interface OddsInput {
     eventId: string,
@@ -39,7 +39,7 @@ const OddsSchema = new mongoose.Schema<OddsDocument>(
 	}
 )
 
-export async function getWeeklyTeamOdds(weekNumber: number, espnTeamId: number): Promise<OddsDocument|null> {
+export async function getWeeklyTeamOdds(weekNumber: number, weekType: number, espnTeamId: number): Promise<OddsDocument|null> {
 	return OddsModel.findOne(
 		{  
 			$and: [
@@ -49,9 +49,17 @@ export async function getWeeklyTeamOdds(weekNumber: number, espnTeamId: number):
 						{ awayTeamId: espnTeamId }
 					]
 				},
-				{ eventWeek: weekNumber }
+				{ eventWeek: weekNumber },
+				{ eventWeekType: weekType }
 			],
 		})
+}
+
+export async function getWeeklyOdds(weekNumber: number, weekType: number): Promise<(OddsDocument & {_id: Types.ObjectId;})[]> {
+	return OddsModel.find({
+		eventWeek: weekNumber,
+		eventWeekType: weekType
+	})
 }
 
 const OddsModel = mongoose.model('odds', OddsSchema)

@@ -31,6 +31,7 @@ export default class NFLBet implements JockbotCommand {
 	private async handleBet(userRecord: UserDocument, espnTeamId: number, betAmount: number): Promise<void> {
 		const scoreboard = await getNflScoreboard()
 		const { number: weekNumber } = scoreboard.week
+		const { type: weekType } = scoreboard.season
         
 		if(await NflOddsAlreadySetThisWeek(scoreboard) == false) {
 			await this.interaction.reply({
@@ -41,7 +42,7 @@ export default class NFLBet implements JockbotCommand {
 			return
 		}
 
-		const gameOdds = await getWeeklyTeamOdds(weekNumber, espnTeamId)
+		const gameOdds = await getWeeklyTeamOdds(weekNumber, weekType, espnTeamId)
 
 		if(!gameOdds) {
 			await this.interaction.reply({

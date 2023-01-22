@@ -15,6 +15,10 @@ const JockbotCommands = [
 				.setDescription('Returns live NFL scores.'))
 		.addSubcommand(subcommand => 
 			subcommand
+				.setName('odds')
+				.setDescription('Returns NFL betting odds for this week.'))
+		.addSubcommand(subcommand => 
+			subcommand
 				.setName('logo')
 				.setDescription('Returns the logo of an NFL team.')
 				.addStringOption(option =>

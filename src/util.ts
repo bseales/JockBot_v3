@@ -15,7 +15,9 @@ export function commandToClass(interaction: ChatInputCommandInteraction): string
 			return 'NFLScores'
 		} else if (interaction.options.getSubcommand() == 'logo') {
 			return 'NFLLogo'
-		} 
+		} else if (interaction.options.getSubcommand() == 'odds') {
+			return 'NFLOdds'
+		}
 		return ''
 	case 'claim': 
 		return 'Claim'
@@ -108,4 +110,19 @@ export function getEspnIdByName(teamName: string): number | null {
 
 	default:                return null
 	}
+}
+
+export function formatAMPM(date: Date) {
+	let hours = date.getHours()
+	const minutes = date.getMinutes()
+	const ampm = hours >= 12 ? 'pm' : 'am'
+	hours = hours % 12
+	hours = hours ? hours : 12 // the hour '0' should be '12'
+	const minutesString = minutes < 10 ? '0'+minutes : minutes
+	const strTime = hours + ':' + minutesString + ' ' + ampm + ' EST'
+	return strTime
+}
+
+export function dayNumberToName(day: number): string {
+	return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day]
 }
