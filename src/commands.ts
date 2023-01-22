@@ -29,6 +29,31 @@ const JockbotCommands = [
 		.toJSON(),
 
 	new SlashCommandBuilder()
+		.setName('xfl')
+		.setDescription('XFL Commands')
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('logo')
+				.setDescription('Returns the logo of an XFL team.')
+				.addStringOption(option => 
+					option
+						.setName('team')
+						.setRequired(true)
+						.setDescription('The team whose logo you would like.')
+						.setChoices(
+							{ name: 'Arlington Renegades', value: 'renegades'},
+							{ name: 'DC Defenders', value: 'defenders' },
+							{ name: 'Houston Roughnecks', value: 'roughnecks'},
+							{ name: 'Orlando Guardians', value: 'guardians'},
+							{ name: 'San Antonio Brahmas', value: 'brahmas'},
+							{ name: 'Seattle Sea Dragons', value: 'dragons'},
+							{ name: 'St. Louis BattleHawks', value: 'battlehawks'},
+							{ name: 'Vegas Vipers', value: 'vipers'},
+						)
+				)
+		).toJSON(),
+
+	new SlashCommandBuilder()
 		.setName('claim')
 		.setDescription('Claims a random amount of bux.')
 		.toJSON(),

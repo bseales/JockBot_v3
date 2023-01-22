@@ -19,6 +19,11 @@ export function commandToClass(interaction: ChatInputCommandInteraction): string
 			return 'NFLOdds'
 		}
 		return ''
+	case 'xfl': 
+		if (interaction.options.getSubcommand() == 'logo') {
+			return 'XFLLogo'
+		} 
+		return ''
 	case 'claim': 
 		return 'Claim'
 	case 'set-nfl-odds':
@@ -71,7 +76,7 @@ export function NFLSeasonTypeToString(seasonType: number): string {
 	}
 }
 
-export function getEspnIdByName(teamName: string): number | null {
+export function getNflEspnIdByName(teamName: string): number | null {
 	teamName = teamName.toLowerCase()
 	
 	switch(teamName) {
@@ -109,6 +114,21 @@ export function getEspnIdByName(teamName: string): number | null {
 	case 'texans':          return 34
 
 	default:                return null
+	}
+}
+
+export function getXflEspnIdByName(teamName: string): number | null {
+	switch(teamName) {
+	case 'renegades': 	return 112647
+	case 'vipers': 		return 126747
+	case 'roughnecks': 	return 112648
+	case 'guardians':	return 126748
+	case 'brahmas':		return 126746
+	case 'battlehawks':	return 112651
+	case 'defenders':	return 112646
+	case 'dragons':		return 112652
+
+	default: return null
 	}
 }
 

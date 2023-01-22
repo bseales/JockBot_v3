@@ -2,26 +2,15 @@ import axios from 'axios'
 import { APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import { JockbotCommand } from 'src/interfaces/command'
 import { Team } from 'src/interfaces/espn/nfl'
-import { getNflEspnIdByName } from '../../util'
+import { getXflEspnIdByName } from '../../util'
 
-export default class NFLLogo implements JockbotCommand {
-	public name = 'nfl-logo'
-	public description = 'Returns the logo of an NFL team.'
+export default class XFLLogo implements JockbotCommand {
 	private interaction!: ChatInputCommandInteraction
-
-	public commandBuilder = new SlashCommandBuilder()
-		.setName(this.name)
-		.setDescription(this.description)
-		.addStringOption(option =>
-			option
-				.setName('team')
-				.setRequired(true)
-				.setDescription('The team whose logo you would like.'))
 
 	public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		this.setInteraction(interaction)
 		const team = this.getTeamOption()
-		const espnId = getNflEspnIdByName(team)
+		const espnId = getXflEspnIdByName(team)
 
 		if (!espnId) {
 			await interaction.reply({
@@ -52,7 +41,7 @@ export default class NFLLogo implements JockbotCommand {
 	}
 
 	public async getTeam(espnId: number): Promise<Team> {
-		const json = await axios.get(`http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${espnId}`)
+		const json = await axios.get(`http://site.api.espn.com/apis/site/v2/sports/football/xfl/teams/${espnId}`)
 		const team = json.data.team
 
 		return team

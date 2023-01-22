@@ -16,7 +16,8 @@ export default class JockbotClient extends Client {
 	private loadCommands(): void {
 		const commandFolders = [
 			'',
-			'/nfl'
+			'/nfl',
+			'/xfl'
 		]
 
 		commandFolders.forEach((folder) => {

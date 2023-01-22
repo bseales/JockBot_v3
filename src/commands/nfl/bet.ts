@@ -1,7 +1,7 @@
 import { APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder, HexColorString, User } from 'discord.js'
 import { getUserRecord, UserBet, UserDocument } from '../../database/models/user'
 import { JockbotCommand } from 'src/interfaces/command'
-import { getEspnIdByName, getNflScoreboard, NflOddsAlreadySetThisWeek } from '../../util'
+import { getNflEspnIdByName, getNflScoreboard, NflOddsAlreadySetThisWeek } from '../../util'
 import { getWeeklyTeamOdds } from '../../database/models/odds'
 
 export default class NFLBet implements JockbotCommand {
@@ -16,7 +16,7 @@ export default class NFLBet implements JockbotCommand {
 		this.setDiscordUser(interaction.user)
 		const team = this.getTeamOption()
 		const betAmount = this.getBetAmountOption()
-		const espnTeamId = getEspnIdByName(team)
+		const espnTeamId = getNflEspnIdByName(team)
 		const userRecord = await getUserRecord(this.getDiscordUser(), interaction.guildId)
 
 		if (await this.verifyInputs(betAmount, espnTeamId, userRecord) == false) {
