@@ -43,7 +43,8 @@ describe('Claim Command', () => {
 		const mockInteraction: ChatInputCommandInteraction = ({
 			guildId: '987',
 			inGuild: jest.fn(() => true),
-			reply: jest.fn()
+			reply: jest.fn(),
+			followUp: jest.fn()
 		} as unknown) as ChatInputCommandInteraction
 
 		testSubject.setInteraction(mockInteraction)

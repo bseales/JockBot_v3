@@ -732,6 +732,7 @@ describe('NFL Commands', () => {
 					{
 						sport: 'NFL',
 						eventWeek: 18,
+						eventWeekType: 2,
 						team: 'Buffalo Bills',
 						opponentTeam: 'Atlanta Falcons',
 						teamId: 2,
@@ -830,6 +831,7 @@ describe('NFL Commands', () => {
 					{
 						sport: 'NFL',
 						eventWeek: 18,
+						eventWeekType: 2,
 						team: 'Atlanta Falcons',
 						opponentTeam: 'Buffalo Bills',
 						teamId: 1,

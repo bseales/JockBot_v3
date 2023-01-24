@@ -84,6 +84,7 @@ export default class NFLBet implements JockbotCommand {
 		const bet: UserBet = {
 			sport: 'NFL',
 			eventWeek: weekNumber,
+			eventWeekType: weekType,
 			team,
 			opponentTeam,
 			teamId,

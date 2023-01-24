@@ -1,7 +1,8 @@
-import { APIEmbedFooter, APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder, HexColorString, User } from 'discord.js'
+import { APIEmbedFooter, APIEmbedImage, ChatInputCommandInteraction, EmbedBuilder, EmbedFooterData, HexColorString, User } from 'discord.js'
 import { createUserRecord, getUserRecord, UserDocument } from '../database/models/user'
 import UserModel from '../database/models/user'
 import { JockbotCommand } from 'src/interfaces/command'
+import { getAndUnlockAchievement } from '../achievements'
 
 export default class Claim implements JockbotCommand {
 	public name = 'claim'
@@ -13,6 +14,7 @@ export default class Claim implements JockbotCommand {
 	private discordUser!: User
 	private interaction!: ChatInputCommandInteraction
 	private embedColor: HexColorString = '#0099ff'
+	private checkForAchivements = false
 
 	public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if(!interaction.inGuild()) return
@@ -32,9 +34,17 @@ export default class Claim implements JockbotCommand {
 			embed = await this.buildNewUserEmbed()
 		}
 
+		const achievementEmbed = await this.buildAchievementEmbed()
+
 		await interaction.reply({
 			embeds: [embed]
 		})
+
+		if (achievementEmbed) {
+			await interaction.followUp({
+				embeds: [achievementEmbed]
+			})
+		}
 	}
 
 	/**
@@ -57,6 +67,7 @@ export default class Claim implements JockbotCommand {
 		this.claimAmount = this.getRandomClaimAmount()
 		this.setHoursUntilClaim(2)
 		this.setMinutesUntilClaim(0)
+		this.checkForAchivements = true
 
 		const updatedRecord = await UserModel.findOneAndUpdate({
 			userId: this.getDiscordUser().id,
@@ -68,7 +79,8 @@ export default class Claim implements JockbotCommand {
 				userName: this.getDiscordUser().username
 			},
 			$inc : {
-				'balance' : this.claimAmount
+				'balance' : this.claimAmount,
+				'timesClaimed' : 1
 			}
 		},
 		{
@@ -149,13 +161,47 @@ export default class Claim implements JockbotCommand {
 		const thumbnail: APIEmbedImage = {
 			url: this.getDiscordUser().displayAvatarURL()
 		}
+		const footer: EmbedFooterData = {
+			text: `Times Claimed: ${this.userRecord.timesClaimed}`
+		}
 
 		return new EmbedBuilder({
 			title: `Claim Receipt for ${this.getDiscordUser().username}`,
 			thumbnail,
 			description,
-			
+			footer
 		}).setColor(this.embedColor)
+	}
+
+	/**
+	 * Returns an achievement Embed if one was earned.
+	 * @returns {EmbedBuilder|null}
+	 */
+	private async buildAchievementEmbed(): Promise<EmbedBuilder | null> {
+		if (!this.checkForAchivements) return null
+
+		if (this.userRecord.timesClaimed === 1) {
+			const achievement = await getAndUnlockAchievement(0, this.userRecord)
+
+			let description = `**${achievement.title}**\n`
+			description += achievement.description
+			
+			const thumbnail: APIEmbedImage = {
+				url: this.getDiscordUser().displayAvatarURL()
+			}
+			const image: APIEmbedImage = {
+				url: 'https://cdn.discordapp.com/attachments/551101707325800448/1066523619926216764/Jockbot_Achievement_HOLD_FINAL_I_AM_DONE.gif'
+			}
+	
+			return new EmbedBuilder({
+				title: 'Achievement Unlocked!',
+				thumbnail,
+				description,
+				image
+			}).setColor(this.embedColor)
+		}
+		
+		return null
 	}
 
 	/**
